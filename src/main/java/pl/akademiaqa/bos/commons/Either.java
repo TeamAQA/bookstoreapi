@@ -1,4 +1,4 @@
-package pl.akademiaqa.bookstore.commons;
+package pl.akademiaqa.bos.commons;
 
 import lombok.AllArgsConstructor;
 

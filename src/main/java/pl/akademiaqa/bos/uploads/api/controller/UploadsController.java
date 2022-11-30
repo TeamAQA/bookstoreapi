@@ -1,4 +1,4 @@
-package pl.akademiaqa.bookstore.uploads.api.controller;
+package pl.akademiaqa.bos.uploads.api.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.akademiaqa.bookstore.uploads.api.response.UploadResponse;
-import pl.akademiaqa.bookstore.uploads.service.port.IUploadService;
+import pl.akademiaqa.bos.uploads.api.response.UploadResponse;
+import pl.akademiaqa.bos.uploads.service.port.IUploadService;
 
 @RestController
 @RequestMapping("/uploads")
@@ -21,7 +21,7 @@ public class UploadsController {
     private final IUploadService upload;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UploadResponse> getUpload(@PathVariable String id) {
+    public ResponseEntity<UploadResponse> getUpload(@PathVariable Long id) {
         return upload.getById(id)
                 .map(file -> {
                     UploadResponse uploadResponse = new UploadResponse(
@@ -36,7 +36,7 @@ public class UploadsController {
     }
 
     @GetMapping("/{id}/file")
-    public ResponseEntity<Resource> getUploadFile(@PathVariable String id) {
+    public ResponseEntity<Resource> getUploadFile(@PathVariable Long id) {
         return upload.getById(id)
                 .map(file -> {
                     String contentDisposition = "attachement; filename=\"" + file.getFilename() + "\"";

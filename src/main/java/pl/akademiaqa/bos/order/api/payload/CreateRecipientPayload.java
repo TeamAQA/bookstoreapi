@@ -1,8 +1,8 @@
-package pl.akademiaqa.bookstore.order.api.payload;
+package pl.akademiaqa.bos.order.api.payload;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.akademiaqa.bookstore.order.domain.Recipient;
+import pl.akademiaqa.bos.order.domain.Recipient;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -24,7 +24,7 @@ public class CreateRecipientPayload {
     @Email
     String email;
 
-    Recipient toRecipient() {
+    public Recipient toRecipient() {
         return new Recipient(name, phone, street, city, zipCode, email);
     }
 }

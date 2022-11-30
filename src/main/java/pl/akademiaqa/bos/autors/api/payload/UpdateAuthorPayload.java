@@ -5,7 +5,7 @@ import lombok.Value;
 import javax.validation.constraints.NotBlank;
 
 @Value
-public class CreateAuthorPayload {
+public class UpdateAuthorPayload {
 
     @NotBlank
     String firstName;

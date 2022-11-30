@@ -1,47 +1,76 @@
-package pl.akademiaqa.bookstore;
+package pl.akademiaqa.bos;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import pl.akademiaqa.bookstore.books.api.payload.CreateBookPayload;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookPayload;
-import pl.akademiaqa.bookstore.books.api.response.UpdateBookResponse;
-import pl.akademiaqa.bookstore.books.service.port.IBookService;
-import pl.akademiaqa.bookstore.books.domain.Book;
-import pl.akademiaqa.bookstore.order.api.payload.CreateOrderItemPayload;
-import pl.akademiaqa.bookstore.order.api.payload.CreateOrderPayload;
-import pl.akademiaqa.bookstore.order.api.payload.CreateRecipientPayload;
-import pl.akademiaqa.bookstore.order.api.response.CreateOrderResponse;
-import pl.akademiaqa.bookstore.order.service.port.IOrderService;
+import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
+import pl.akademiaqa.bos.autors.domain.Author;
+import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.service.port.IBookService;
+import pl.akademiaqa.bos.books.domain.Book;
+import pl.akademiaqa.bos.order.api.payload.CreateOrderItemPayload;
+import pl.akademiaqa.bos.order.api.payload.CreateOrderPayload;
+import pl.akademiaqa.bos.order.api.payload.CreateRecipientPayload;
+import pl.akademiaqa.bos.order.api.response.CreateOrderResponse;
+import pl.akademiaqa.bos.order.service.port.IOrderService;
 
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Component
+@AllArgsConstructor
 public class ApplicationStartup implements CommandLineRunner {
     private final IBookService catalog;
     private final IOrderService order;
-    private final String title;
-
-    public ApplicationStartup(IBookService catalog,
-                              IOrderService order,
-                              @Value("${bookaro.catalog.query}") String title) {
-        this.order = order;
-        this.catalog = catalog;
-        this.title = title;
-    }
+    private final AuthorJpaRepository authorRepository;
 
     @Override
     public void run(String... args) {
         initData();
-        searchCatalog();
         placeOrder();
     }
 
+    private void initData() {
+        Author joshua = new Author("Joshua", "Bloch");
+        Author neal = new Author("Neal", "Gafter");
+        Author jamesClear = new Author("James", "Clear");
+
+        authorRepository.save(joshua);
+        authorRepository.save(neal);
+        authorRepository.save(jamesClear);
+
+        CreateUpdateBookPayload effectiveJava = new CreateUpdateBookPayload(
+                "Effective Java",
+                Set.of(joshua.getId()),
+                2005,
+                new BigDecimal("79.00"),
+                50L);
+
+        CreateUpdateBookPayload javaPuzzlers = new CreateUpdateBookPayload(
+                "Java Puzzlers",
+                Set.of(joshua.getId(), neal.getId()),
+                2018,
+                new BigDecimal("99.00"),
+                50L);
+
+        CreateUpdateBookPayload atomoweNawyki = new CreateUpdateBookPayload(
+                "Atomowe nawyki",
+                Set.of(jamesClear.getId()),
+                2019,
+                new BigDecimal("44.90"),
+                50L);
+
+        catalog.createBook(effectiveJava);
+        catalog.createBook(javaPuzzlers);
+        catalog.createBook(atomoweNawyki);
+    }
+
     private void placeOrder() {
-        Book panTadeusz = catalog.findOneByTitle("Pan Tadeusz").orElseThrow(() -> new IllegalStateException("Can not find a book"));
-        Book chlopi = catalog.findOneByTitle("Chłopi").orElseThrow(() -> new IllegalStateException("Can not find a book"));
+        Book effectiveJava = catalog.findOneByTitle("Effective Java").orElseThrow(() -> new IllegalStateException("Can not find a book"));
+        Book puzzlers = catalog.findOneByTitle("Java Puzzlers").orElseThrow(() -> new IllegalStateException("Can not find a book"));
 
         CreateRecipientPayload recipient = CreateRecipientPayload
                 .builder()
@@ -54,12 +83,12 @@ public class ApplicationStartup implements CommandLineRunner {
                 .build();
 
         CreateOrderItemPayload item1 = CreateOrderItemPayload.builder()
-                .bookId(panTadeusz.getId())
-                .quantity(10)
+                .bookId(effectiveJava.getId())
+                .quantity(5)
                 .build();
 
         CreateOrderItemPayload item2 = CreateOrderItemPayload.builder()
-                .bookId(chlopi.getId())
+                .bookId(puzzlers.getId())
                 .quantity(5)
                 .build();
 
@@ -75,46 +104,6 @@ public class ApplicationStartup implements CommandLineRunner {
                 orderId -> "Created ORDER with id: " + orderId,
                 error -> "Failed to created order: " + error
         );
-        System.out.println(result);
-    }
-
-    private void searchCatalog() {
-        findByTitle();
-        findAndUpdate();
-        findByTitle();
-    }
-
-    private void findByTitle() {
-        List<Book> books = catalog.findByTitle(title);
-        books.forEach(System.out::println);
-    }
-
-    private void findAndUpdate() {
-        System.out.println("Updating book...");
-        catalog.findOneByTitleAndAuthor("Pan Tadeusz", "Adam Mickiewicz")
-                .ifPresent(book -> {
-                    UpdateBookPayload payload = UpdateBookPayload
-                            .builder()
-                            .title("Pan Tadeusz Czyli Ostatni Zajazd Na Litwie")
-                            .author("Adam Mickiewicz")
-                            .year(1834)
-                            .price(new BigDecimal("100"))
-                            .build();
-
-                    UpdateBookResponse response = catalog.updateBook(book.getId(), payload);
-
-                    String result = response.handle(
-                            orderId -> "Created ORDER with id: " + orderId,
-                            error -> "Failed to created order: " + error
-                    );
-                    System.out.println(result);
-                });
-    }
-
-    private void initData() {
-        catalog.createBook(new CreateBookPayload("Pan Tadeusz", "Adam Mickiewicz", 1834, new BigDecimal("100")));
-        catalog.createBook(new CreateBookPayload("Ogniem i Mieczem", "Henryk Sienkiewicz", 1884, new BigDecimal("100")));
-        catalog.createBook(new CreateBookPayload("Chłopi", "Władysław Reymont ", 1904, new BigDecimal("100")));
-        catalog.createBook(new CreateBookPayload("Pan Wołodyjowski", "Henryk Sienkiewicz ", 1908, new BigDecimal("100")));
+        log.info(result.toString());
     }
 }

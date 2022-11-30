@@ -1,6 +1,6 @@
-package pl.akademiaqa.bookstore.books.api.response;
+package pl.akademiaqa.bos.books.api.response;
 
-import pl.akademiaqa.bookstore.commons.Either;
+import pl.akademiaqa.bos.commons.Either;
 
 public class PartialUpdateBookResponse extends Either<String, Long> {
     public PartialUpdateBookResponse(boolean success, String left, Long right) {

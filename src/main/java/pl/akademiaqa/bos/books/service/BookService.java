@@ -1,21 +1,23 @@
-package pl.akademiaqa.bookstore.books.service;
+package pl.akademiaqa.bos.books.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
-import pl.akademiaqa.bookstore.books.api.payload.CreateBookPayload;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookCoverPayload;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookPayload;
-import pl.akademiaqa.bookstore.books.api.response.CreateBookResponse;
-import pl.akademiaqa.bookstore.books.api.response.PartialUpdateBookResponse;
-import pl.akademiaqa.bookstore.books.api.response.UpdateBookResponse;
-import pl.akademiaqa.bookstore.books.service.port.IBookService;
-import pl.akademiaqa.bookstore.books.db.BookJpaRepository;
-import pl.akademiaqa.bookstore.books.domain.Book;
-import pl.akademiaqa.bookstore.commons.StringBuilderPlus;
-import pl.akademiaqa.bookstore.uploads.service.port.IUploadService;
-import pl.akademiaqa.bookstore.uploads.domain.Upload;
+import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
+import pl.akademiaqa.bos.autors.domain.Author;
+import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
+import pl.akademiaqa.bos.books.api.response.CreateUpdateBookResponse;
+import pl.akademiaqa.bos.books.api.response.PartialUpdateBookResponse;
+import pl.akademiaqa.bos.books.service.port.IBookService;
+import pl.akademiaqa.bos.books.db.BookJpaRepository;
+import pl.akademiaqa.bos.books.domain.Book;
+import pl.akademiaqa.bos.commons.StringBuilderPlus;
+import pl.akademiaqa.bos.uploads.service.port.IUploadService;
+import pl.akademiaqa.bos.uploads.domain.Upload;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -23,10 +25,14 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static pl.akademiaqa.bos.commons.IsNullOrEmpty.*;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookService implements IBookService {
     private final BookJpaRepository repository;
+    private final AuthorJpaRepository authorRepository;
     private final IUploadService upload;
 
     @Override
@@ -36,66 +42,79 @@ public class BookService implements IBookService {
 
     @Override
     public List<Book> findByTitle(String title) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository.findByTitle(title);
     }
 
     @Override
     public List<Book> findByAuthor(String author) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository.findByAuthor(author);
     }
 
     @Override
     public Optional<Book> findOneByTitle(String title) {
-        return repository.findAll()
+        return repository.findByTitle(title)
                 .stream()
-                .filter(book -> book.getTitle().contains(title))
-                .findFirst();
-    }
-
-    @Override
-    public Optional<Book> findOneByAuthor(String author) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getAuthor().contains(author))
                 .findFirst();
     }
 
     @Override
     public List<Book> findAll() {
-        return repository.findAll();
-    }
-
-    @Override
-    public Optional<Book> findOneByTitleAndAuthor(String title, String author) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-                .findFirst();
+        return repository.findAllEager();
     }
 
     @Override
     public List<Book> findByTitleAndAuthor(String title, String author) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository.findByTitleAndAuthor(title, author);
     }
 
     @Override
-    public CreateBookResponse createBook(CreateBookPayload payload) {
-        Book savedBook = repository.save(payload.toBook());
+    @Transactional
+    public CreateUpdateBookResponse createBook(CreateUpdateBookPayload payload) {
+        Book savedBook = repository.save(toBook(payload));
         if (savedBook == null) {
-            return CreateBookResponse.failure("Can not create a book");
+            return CreateUpdateBookResponse.failure("Can not create a book");
         }
-        return CreateBookResponse.success(savedBook.getId());
+        return CreateUpdateBookResponse.success(savedBook.getId());
+    }
+
+    public CreateUpdateBookResponse createBook(Long id, CreateUpdateBookPayload payload) {
+        Book savedBook = repository.save(toBook(id, payload));
+        if (savedBook == null) {
+            return CreateUpdateBookResponse.failure("Can not create a book");
+        }
+        return CreateUpdateBookResponse.success(savedBook.getId());
+    }
+
+    private Book toBook(CreateUpdateBookPayload payload) {
+        Book book = new Book(payload.getTitle(), payload.getYear(), payload.getPrice(), payload.getAvailable());
+        Set<Author> authors = payload.getAuthors()
+                .stream()
+                .map(authorId ->
+                        authorRepository.findById(authorId)
+                                .orElseThrow(() -> new IllegalStateException("Can not find author with given id: " + authorId))
+                ).collect(Collectors.toSet());
+        updateBookAuthors(book, authors);
+
+        return book;
+    }
+
+    private Book toBook(Long id, CreateUpdateBookPayload payload) {
+        Book book = new Book(id, payload.getTitle(), payload.getYear(), payload.getPrice(), payload.getAvailable());
+        Set<Author> authors = payload.getAuthors()
+                .stream()
+                .map(authorId ->
+                        authorRepository.findById(authorId)
+                                .orElseThrow(() -> new IllegalStateException("Can not find author with given id: " + authorId))
+                ).collect(Collectors.toSet());
+        updateBookAuthors(book, authors);
+
+        return book;
+    }
+
+    private void updateBookAuthors(Book book, Set<Author> authors) {
+        book.removeAuthors();
+        authors.forEach(book::addAuthor);
+        log.info(book.toString());
     }
 
     @Override
@@ -108,18 +127,36 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public UpdateBookResponse updateBook(Long id, UpdateBookPayload payload) {
+    @Transactional
+    public CreateUpdateBookResponse updateBook(Long id, CreateUpdateBookPayload payload) {
         return repository.findById(id)
                 .map(book -> {
-                    Book updatedBook = payload.toUpdatedBook(book);
+                    Book updatedBook = toUpdatedBook(payload, book);
+                    updatedBook.setPut(true);
                     repository.save(updatedBook);
-                    return UpdateBookResponse.success(updatedBook.getId());
+                    return CreateUpdateBookResponse.success(updatedBook.getId());
                 })
-                .orElseGet(() -> UpdateBookResponse.failure("Can not find a book with id: " + id));
+                .orElseGet(() -> createBook(id, payload));
+    }
+
+    private Book toUpdatedBook(CreateUpdateBookPayload payload, Book book) {
+        Set<Author> authors = payload.getAuthors()
+                .stream()
+                .map(authorId -> authorRepository.findById(authorId)
+                        .orElseThrow(() -> new IllegalStateException("Can not find author with given id: " + authorId))
+                ).collect(Collectors.toSet());
+
+
+        book.setTitle(payload.getTitle());
+        book.setYear(payload.getYear());
+        book.setPrice(payload.getPrice());
+        updateBookAuthors(book, authors);
+
+        return book;
     }
 
     @Override
-    public UpdateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload) {
+    public CreateUpdateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload) {
         return repository.findById(id)
                 .map(book -> {
                     if (payload.getFilename().isBlank()) {
@@ -128,9 +165,9 @@ public class BookService implements IBookService {
                     Upload savedUpload = upload.save(new UpdateBookCoverPayload(payload.getFile(), payload.getContentType(), payload.getFilename()));
                     book.setCoverId(savedUpload.getId());
                     repository.save(book);
-                    return UpdateBookResponse.success(book.getId());
+                    return CreateUpdateBookResponse.success(book.getId());
                 })
-                .orElseGet(() -> UpdateBookResponse.failure("Can not find a book with id: " + id));
+                .orElseGet(() -> CreateUpdateBookResponse.failure("Can not find a book with id: " + id));
     }
 
     @Override
@@ -149,11 +186,31 @@ public class BookService implements IBookService {
                     fields.forEach((key, value) -> {
                         Field field = ReflectionUtils.findField(Book.class, (String) key);
                         field.setAccessible(true);
+
                         if (field.getName().equals("id")) {
+                            // ignore id
                         } else if (field.getName().equals("price")) {
-                            if (isNullOrEmpty(value)) {
+                            if (value == null) {
                                 isError.set(true);
                                 errors.appendLine("price must not be null");
+                                return;
+                            }
+
+                            if (value.getClass() == LinkedHashMap.class) {
+                                BigDecimal price = book.getPrice();
+                                BigDecimal newPrice = price.add(new BigDecimal(1));
+                                ReflectionUtils.setField(field, book, newPrice);
+                                return;
+                            }
+
+                            if (String.valueOf(value).equals("null")) {
+                                isError.set(true);
+                                errors.appendLine("price must not be null");
+                                return;
+                            }
+                            if (String.valueOf(value).isBlank()) {
+                                isError.set(true);
+                                errors.appendLine("price must not be empty");
                                 return;
                             }
                             if (Double.valueOf(String.valueOf(value)) < 1) {
@@ -167,6 +224,7 @@ public class BookService implements IBookService {
                                 return;
                             }
                             ReflectionUtils.setField(field, book, new BigDecimal(String.valueOf(value)));
+
                         } else if (field.getName().equals("year")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
@@ -179,6 +237,7 @@ public class BookService implements IBookService {
                                 return;
                             }
                             ReflectionUtils.setField(field, book, value);
+
                         } else if (field.getName().equals("title")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
@@ -191,18 +250,30 @@ public class BookService implements IBookService {
                                 return;
                             }
                             ReflectionUtils.setField(field, book, value);
-                        } else if (field.getName().equals("author")) {
-                            if (isNullOrEmpty(value)) {
+
+                        } else if (field.getName().equals("authors")) {
+                            if (value == null) {
                                 isError.set(true);
-                                errors.appendLine("author must not be blank");
+                                errors.appendLine("authors must not be blank");
                                 return;
                             }
-                            if (value.getClass() != String.class) {
+                            if (value.getClass() != ArrayList.class) {
                                 isError.set(true);
-                                errors.appendLine("author must be a string");
+                                errors.appendLine("authors must be an array");
                                 return;
                             }
-                            ReflectionUtils.setField(field, book, value);
+                            if (((ArrayList<Integer>) value).isEmpty()) {
+                                isError.set(true);
+                                errors.appendLine("authors must not be empty");
+                                return;
+                            }
+
+                            Set<Author> authors = ((ArrayList<Integer>) value).stream()
+                                    .map(authorId -> authorRepository.findById(authorId.longValue())
+                                            .orElseThrow(() -> new IllegalStateException("Can not find author with given id: " + authorId))
+                                    ).collect(Collectors.toSet());
+
+                            ReflectionUtils.setField(field, book, authors);
                         } else {
                             ReflectionUtils.setField(field, book, value);
                         }
@@ -218,10 +289,6 @@ public class BookService implements IBookService {
 
                 })
                 .orElseGet(() -> PartialUpdateBookResponse.failure("Can not find a book with id: " + id));
-    }
-
-    private boolean isNullOrEmpty(Object value) {
-        return String.valueOf(value).isBlank() || String.valueOf(value).equals("null") || String.valueOf(value) == null;
     }
 
     @Override

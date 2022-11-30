@@ -1,5 +1,6 @@
-package pl.akademiaqa.bookstore;
+package pl.akademiaqa.bos;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,20 +18,13 @@ public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<Object> handleException(MethodArgumentNotValidException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        body.put("timestamp", new Date());
-        body.put("status", status.value());
-
         List<String> errors = ex
                 .getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(x -> x.getField() + " " + x.getDefaultMessage())
                 .collect(Collectors.toList());
-        body.put("errors", errors);
-
-        return new ResponseEntity<>(body, status);
+        return handleError(HttpStatus.BAD_REQUEST, errors);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -41,6 +35,11 @@ public class CustomGlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Object> handle(IllegalStateException ex) {
         return handleError(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(PSQLException.class)
+    public ResponseEntity<Object> handle(PSQLException ex) {
+        return handleError(HttpStatus.CONFLICT, List.of(ex.getMessage()));
     }
 
     private ResponseEntity<Object> handleError(HttpStatus status, List<String> errors) {

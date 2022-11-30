@@ -1,4 +1,4 @@
-package pl.akademiaqa.bookstore;
+package pl.akademiaqa.bos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

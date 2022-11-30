@@ -1,41 +1,39 @@
-package pl.akademiaqa.bookstore.uploads.service;
+package pl.akademiaqa.bos.uploads.service;
 
-import org.apache.commons.lang.RandomStringUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookCoverPayload;
-import pl.akademiaqa.bookstore.uploads.service.port.IUploadService;
-import pl.akademiaqa.bookstore.uploads.domain.Upload;
+import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
+import pl.akademiaqa.bos.uploads.db.UploadJpaRepository;
+import pl.akademiaqa.bos.uploads.service.port.IUploadService;
+import pl.akademiaqa.bos.uploads.domain.Upload;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@AllArgsConstructor
 public class UploadService implements IUploadService {
-    private final Map<String, Upload> storage = new ConcurrentHashMap<>();
+
+    private final UploadJpaRepository repository;
 
     @Override
     public Upload save(UpdateBookCoverPayload payload) {
-        String newId = RandomStringUtils.randomAlphanumeric(10).toLowerCase();
         Upload upload = new Upload(
-                newId,
-                payload.getFile(),
-                payload.getContentType(),
                 payload.getFilename(),
-                LocalDateTime.now()
+                payload.getContentType(),
+                payload.getFile()
         );
-        storage.put(upload.getId(), upload);
+        repository.save(upload);
         return upload;
     }
 
     @Override
-    public Optional<Upload> getById(String id) {
-        return Optional.ofNullable(storage.get(id));
+    public Optional<Upload> getById(Long id) {
+        return repository.findById(id);
     }
 
     @Override
-    public void removeById(String id) {
-        storage.remove(id);
+    public void removeById(Long id) {
+        repository.deleteById(id);
     }
 }

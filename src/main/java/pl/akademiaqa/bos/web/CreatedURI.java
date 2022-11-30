@@ -1,4 +1,4 @@
-package pl.akademiaqa.bookstore.web;
+package pl.akademiaqa.bos.web;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

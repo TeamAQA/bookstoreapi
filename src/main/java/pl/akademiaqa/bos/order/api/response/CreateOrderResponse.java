@@ -1,6 +1,6 @@
-package pl.akademiaqa.bookstore.order.api.response;
+package pl.akademiaqa.bos.order.api.response;
 
-import pl.akademiaqa.bookstore.commons.Either;
+import pl.akademiaqa.bos.commons.Either;
 
 public class CreateOrderResponse extends Either<String, Long> {
     public CreateOrderResponse(boolean success, String left, Long right) {

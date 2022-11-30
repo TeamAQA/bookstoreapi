@@ -1,4 +1,4 @@
-package pl.akademiaqa.bookstore.order.api.payload;
+package pl.akademiaqa.bos.order.api.payload;
 
 import lombok.Data;
 

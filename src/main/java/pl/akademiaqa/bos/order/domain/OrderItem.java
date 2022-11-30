@@ -1,25 +1,24 @@
-package pl.akademiaqa.bookstore.order.domain;
+package pl.akademiaqa.bos.order.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.akademiaqa.bos.books.domain.Book;
+import pl.akademiaqa.bos.jpa.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
-public class OrderItem {
-    @Id
-    @GeneratedValue
-    private Long id;
-    private Long bookId;
+@AllArgsConstructor
+public class OrderItem extends BaseEntity {
+
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
     private int quantity;
-
-    public OrderItem(Long bookId, int quantity) {
-        this.bookId = bookId;
-        this.quantity = quantity;
-    }
-
 }

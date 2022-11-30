@@ -1,13 +1,11 @@
-package pl.akademiaqa.bookstore.books.service.port;
+package pl.akademiaqa.bos.books.service.port;
 
 import org.springframework.http.ResponseEntity;
-import pl.akademiaqa.bookstore.books.api.payload.CreateBookPayload;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookCoverPayload;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookPayload;
-import pl.akademiaqa.bookstore.books.api.response.CreateBookResponse;
-import pl.akademiaqa.bookstore.books.api.response.PartialUpdateBookResponse;
-import pl.akademiaqa.bookstore.books.api.response.UpdateBookResponse;
-import pl.akademiaqa.bookstore.books.domain.Book;
+import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
+import pl.akademiaqa.bos.books.api.response.CreateUpdateBookResponse;
+import pl.akademiaqa.bos.books.api.response.PartialUpdateBookResponse;
+import pl.akademiaqa.bos.books.domain.Book;
 
 import java.util.List;
 import java.util.Map;
@@ -23,21 +21,17 @@ public interface IBookService {
 
     Optional<Book> findOneByTitle(String title);
 
-    Optional<Book> findOneByAuthor(String title);
-
     List<Book> findAll();
-
-    Optional<Book> findOneByTitleAndAuthor(String title, String author);
 
     List<Book> findByTitleAndAuthor(String title, String author);
 
-    CreateBookResponse createBook(CreateBookPayload payload);
+    CreateUpdateBookResponse createBook(CreateUpdateBookPayload payload);
 
     ResponseEntity removeById(Long id);
 
-    UpdateBookResponse updateBook(Long id, UpdateBookPayload payload);
+    CreateUpdateBookResponse updateBook(Long id, CreateUpdateBookPayload payload);
 
-    UpdateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload);
+    CreateUpdateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload);
 
     PartialUpdateBookResponse partialUpdateBook(Long id, Map<Object, Object> fields);
 

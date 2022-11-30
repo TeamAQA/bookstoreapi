@@ -1,17 +1,40 @@
-package pl.akademiaqa.bookstore.order.domain;
+package pl.akademiaqa.bos.order.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.akademiaqa.bos.jpa.BaseEntity;
 
-@Value
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-public class Recipient {
-    String name;
-    String phone;
-    String street;
-    String city;
-    String zipCode;
-    String email;
+@NoArgsConstructor
+@Entity
+@Table(name = "recipients")
+@EntityListeners(AuditingEntityListener.class)
+public class Recipient extends BaseEntity {
+    private String name;
+    private String phone;
+    private String street;
+    private String city;
+    private String zipCode;
+    private String email;
+    @CreatedDate
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    public Recipient(String name, String phone, String street, String city, String zipCode, String email) {
+        this.name = name;
+        this.phone = phone;
+        this.street = street;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.email = email;
+    }
 }

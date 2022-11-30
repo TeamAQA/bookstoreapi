@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Value
-public class CreateBookPayload {
+public class CreateUpdateBookPayload {
     @NotBlank
     String title;
     @NotEmpty
@@ -18,4 +18,7 @@ public class CreateBookPayload {
     @DecimalMin(value = "1.00")
     @DecimalMax(value = "1000.00")
     BigDecimal price;
+    @NotNull
+    @PositiveOrZero
+    Long available;
 }

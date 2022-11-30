@@ -1,4 +1,4 @@
-package pl.akademiaqa.bookstore.books.api.payload;
+package pl.akademiaqa.bos.books.api.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

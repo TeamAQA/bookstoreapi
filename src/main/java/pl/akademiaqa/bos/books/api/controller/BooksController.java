@@ -1,4 +1,4 @@
-package pl.akademiaqa.bookstore.books.api.controller;
+package pl.akademiaqa.bos.books.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -6,12 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.akademiaqa.bookstore.books.api.payload.CreateBookPayload;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookCoverPayload;
-import pl.akademiaqa.bookstore.books.api.payload.UpdateBookPayload;
-import pl.akademiaqa.bookstore.books.service.port.IBookService;
-import pl.akademiaqa.bookstore.books.domain.Book;
-import pl.akademiaqa.bookstore.web.CreatedURI;
+import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
+import pl.akademiaqa.bos.books.service.port.IBookService;
+import pl.akademiaqa.bos.books.domain.Book;
+import pl.akademiaqa.bos.web.CreatedURI;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class BooksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Object> createBook(@Valid @RequestBody CreateBookPayload payload) {
+    public ResponseEntity<Object> createBook(@Valid @RequestBody CreateUpdateBookPayload payload) {
         return books.createBook(payload)
                 .handle(
                         bookId -> ResponseEntity.created(bookUri(bookId)).body(books.findById(bookId)),
@@ -62,12 +61,23 @@ public class BooksController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> updateBook(@PathVariable Long id, @Valid @RequestBody UpdateBookPayload payload) {
+    public ResponseEntity<Object> updateBook(@PathVariable Long id, @Valid @RequestBody CreateUpdateBookPayload payload) {
         return books.updateBook(id, payload)
                 .handle(
-                        bookId -> ResponseEntity.ok(books.findById(bookId)),
+                        bookId -> {
+                            Optional<Book> book = books.findById(bookId);
+                            if (book.get().isPut()) {
+                                return ResponseEntity.ok(book);
+                            } else {
+                                return ResponseEntity.created(putBookUri()).body(book);
+                            }
+                        },
                         error -> ResponseEntity.notFound().build()
                 );
+    }
+
+    private URI putBookUri() {
+        return new CreatedURI("").uri();
     }
 
     @PatchMapping("/{id}")

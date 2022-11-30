@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/orders")
-public class OrderController {
+public class OrdersController {
 
     private final IOrderService orders;
 
