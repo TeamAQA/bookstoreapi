@@ -24,6 +24,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Book extends BaseEntity {
+    @Column(unique = true)
     private String title;
     private Integer year;
     private BigDecimal price;
