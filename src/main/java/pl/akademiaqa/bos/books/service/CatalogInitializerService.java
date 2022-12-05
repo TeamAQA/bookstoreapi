@@ -70,39 +70,6 @@ public class CatalogInitializerService implements ICatalogInitializerService {
         } catch (IOException e) {
             throw new IllegalStateException("Failed to parse CSV file", e);
         }
-
-//        Author joshua = new Author("Joshua", "Bloch");
-//        Author neal = new Author("Neal", "Gafter");
-//        Author jamesClear = new Author("James", "Clear");
-//
-//        authorRepository.save(joshua);
-//        authorRepository.save(neal);
-//        authorRepository.save(jamesClear);
-//
-//        CreateUpdateBookPayload effectiveJava = new CreateUpdateBookPayload(
-//                "Effective Java",
-//                Set.of(joshua.getId()),
-//                2005,
-//                new BigDecimal("79.00"),
-//                50L);
-//
-//        CreateUpdateBookPayload javaPuzzlers = new CreateUpdateBookPayload(
-//                "Java Puzzlers",
-//                Set.of(joshua.getId(), neal.getId()),
-//                2018,
-//                new BigDecimal("99.00"),
-//                50L);
-//
-//        CreateUpdateBookPayload atomoweNawyki = new CreateUpdateBookPayload(
-//                "Atomowe nawyki",
-//                Set.of(jamesClear.getId()),
-//                2019,
-//                new BigDecimal("44.90"),
-//                50L);
-//
-//        bookService.createBook(effectiveJava);
-//        bookService.createBook(javaPuzzlers);
-//        bookService.createBook(atomoweNawyki);
     }
 
     private void initBook(CsvBook csvBook) {
@@ -199,7 +166,5 @@ public class CatalogInitializerService implements ICatalogInitializerService {
         private BigDecimal amount;
         @CsvBindByName
         private String thumbnail;
-
-
     }
 }

@@ -3,6 +3,7 @@ package pl.akademiaqa.bos.autors.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.akademiaqa.bos.autors.api.payload.CreateAuthorPayload;
 import pl.akademiaqa.bos.autors.api.payload.UpdateAuthorPayload;

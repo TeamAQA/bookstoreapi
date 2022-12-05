@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
@@ -45,6 +46,7 @@ public class BooksController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> createBook(@Valid @RequestBody CreateUpdateBookPayload payload) {
@@ -54,11 +56,11 @@ public class BooksController {
                         error -> ResponseEntity.badRequest().body(error)
                 );
     }
-
     private URI bookUri(Long bookId) {
         return new CreatedURI("/" + bookId).uri();
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateBook(@PathVariable Long id, @Valid @RequestBody CreateUpdateBookPayload payload) {
@@ -80,6 +82,7 @@ public class BooksController {
         return new CreatedURI("").uri();
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> partialUpdateBook(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
@@ -90,12 +93,14 @@ public class BooksController {
                 );
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         books.removeById(id);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PatchMapping(value = "/{id}/cover", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateBookCover(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
@@ -106,6 +111,7 @@ public class BooksController {
                 );
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping(value = "/{id}/cover")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBookCover(@PathVariable Long id) {

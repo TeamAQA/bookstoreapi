@@ -3,6 +3,7 @@ package pl.akademiaqa.bos.order.api.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.akademiaqa.bos.order.api.payload.CreateOrderPayload;
 import pl.akademiaqa.bos.order.api.payload.UpdateStatusPayload;
@@ -21,6 +22,7 @@ public class OrdersController {
 
     private final IOrderService orders;
 
+    @Secured({"ROLE_ADMIN"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<RichOrder> getAllOrders() {
@@ -48,12 +50,14 @@ public class OrdersController {
         return new CreatedURI("/" + orderId).uri();
     }
 
+    @Secured({"ROLE_ADMIN"})
     @PatchMapping("/{id}/status")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<RichOrder> updateOrderStatus(@PathVariable Long id, @RequestBody UpdateStatusPayload payload) {
         return orders.updateOrderStatus(id, payload);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity deleteOrder(@PathVariable Long id) {
