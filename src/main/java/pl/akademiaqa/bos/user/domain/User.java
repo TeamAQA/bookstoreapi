@@ -10,6 +10,8 @@ import pl.akademiaqa.bos.jpa.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 @Getter
@@ -17,25 +19,20 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-public class UserEntity extends BaseEntity {
+public class User extends BaseEntity {
 
     private String name;
     private String username;
     private String password;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
 
-    @CollectionTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id")
-    )
-    @Column(name = "role")
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> roles;
+    public User(){}
 
-    @CreatedDate
-    @JsonIgnore
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @JsonIgnore
-    private LocalDateTime updatedAt;
+    public User(String name, String username, String password){
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.roles = new ArrayList<>();
+    }
 }

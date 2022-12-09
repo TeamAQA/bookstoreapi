@@ -39,6 +39,7 @@ public class BooksController {
         return books.findAll();
     }
 
+    @Secured({"ROLE_USER"})
     @GetMapping("/{id}")
     public ResponseEntity<Book> getById(@PathVariable Long id) {
         return books.findById(id)
