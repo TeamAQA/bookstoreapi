@@ -19,6 +19,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 public class UserEntity extends BaseEntity {
 
+    private String name;
     private String username;
     private String password;
 
