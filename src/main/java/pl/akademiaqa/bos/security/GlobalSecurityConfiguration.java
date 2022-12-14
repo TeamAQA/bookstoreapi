@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.akademiaqa.bos.security.filters.CustomAuthenticationFilter;
 import pl.akademiaqa.bos.security.filters.CustomAuthorizationFilter;
 
@@ -22,10 +24,16 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableConfigurationProperties(AdminConfig.class)
 @AllArgsConstructor
-public class GlobalSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class GlobalSecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("*")
+                .allowedOrigins("*");
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
