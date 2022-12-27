@@ -27,14 +27,9 @@ public class ApplicationStartup implements CommandLineRunner {
     @Bean
     CommandLineRunner run(UserService userService) {
         return args -> {
-            userService.saveRole(new Role("ROLE_USER"));
             userService.saveRole(new Role("ROLE_ADMIN"));
-
-            userService.saveUser(new User("Bartek", "bartek", "123456"));
-            userService.saveUser(new User("Tomek", "tomek", "123456"));
-
-            userService.addRoleToUser("bartek", "ROLE_USER");
-            userService.addRoleToUser("tomek", "ROLE_ADMIN");
+            userService.saveUser(new User("Admin", "admin", "123456"));
+            userService.addRoleToUser("admin", "ROLE_ADMIN");
         };
     }
 

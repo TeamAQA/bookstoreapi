@@ -63,6 +63,11 @@ public class BookService implements IBookService {
     }
 
     @Override
+    public List<Book> admin_findAll() {
+        return repository.admin_findAllBooks();
+    }
+
+    @Override
     public List<Book> findByTitleAndAuthor(String title, String author) {
         return repository.findByTitleAndAuthor(title, author);
     }
@@ -260,11 +265,6 @@ public class BookService implements IBookService {
                             if (value.getClass() != ArrayList.class) {
                                 isError.set(true);
                                 errors.appendLine("authors must be an array");
-                                return;
-                            }
-                            if (((ArrayList<Integer>) value).isEmpty()) {
-                                isError.set(true);
-                                errors.appendLine("authors must not be empty");
                                 return;
                             }
 

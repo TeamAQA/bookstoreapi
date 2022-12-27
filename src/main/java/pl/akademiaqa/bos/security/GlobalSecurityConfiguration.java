@@ -38,6 +38,7 @@ public class GlobalSecurityConfiguration extends WebSecurityConfigurerAdapter im
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.cors();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
 
         http

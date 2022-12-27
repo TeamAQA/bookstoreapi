@@ -31,7 +31,7 @@ public class Book extends BaseEntity {
     private Long coverId;
     private Long available;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable
     @JsonIgnoreProperties("books")
     Set<Author> authors = new HashSet<>();

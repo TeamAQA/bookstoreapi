@@ -22,6 +22,7 @@ public interface IBookService {
     Optional<Book> findOneByTitle(String title);
 
     List<Book> findAll();
+    List<Book> admin_findAll();
 
     List<Book> findByTitleAndAuthor(String title, String author);
 

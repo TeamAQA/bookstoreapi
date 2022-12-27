@@ -137,8 +137,8 @@ public class AuthorService implements IAuthorService {
 
     @Override
     public ResponseEntity removeById(Long id) {
-        Optional<Author> book = repository.findById(id);
-        if (book.isPresent()) {
+        Optional<Author> author = repository.findById(id);
+        if (author.isPresent()) {
             repository.deleteById(id);
         }
         return ResponseEntity.noContent().build();
@@ -147,6 +147,7 @@ public class AuthorService implements IAuthorService {
     private Author toUpdatedAuthor(UpdateAuthorPayload payload, Author author) {
         author.setFirstName(payload.getFirstName());
         author.setLastName(payload.getLastName());
+        author.setFullName(payload.getFirstName() + " " + payload.getLastName());
         return author;
     }
 

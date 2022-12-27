@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
 import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
 import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
 import pl.akademiaqa.bos.books.domain.Book;
+import pl.akademiaqa.bos.books.domain.RestBook;
 import pl.akademiaqa.bos.books.service.port.IBookService;
 
 import java.math.BigDecimal;
@@ -55,9 +57,13 @@ class BooksControllerTestIT {
         bookService.createBook(effectiveJava);
         bookService.createBook(javaPuzzlers);
 
-        List<Book> allBooks = controller.getAll(Optional.empty(), Optional.empty());
+        List<RestBook> allBooks = controller.getAll(mockRequest(), Optional.empty(), Optional.empty());
 
         assertThat(allBooks).isNotEmpty();
         assertThat(allBooks.size()).isEqualTo(2);
+    }
+
+    private MockHttpServletRequest mockRequest() {
+        return new MockHttpServletRequest();
     }
 }

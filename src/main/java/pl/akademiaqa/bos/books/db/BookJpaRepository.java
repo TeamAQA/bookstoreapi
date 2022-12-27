@@ -12,6 +12,9 @@ public interface BookJpaRepository extends JpaRepository<Book, Long> {
     @Query("SELECT DISTINCT b FROM Book b JOIN FETCH b.authors")
     List<Book> findAllEager();
 
+    @Query("SELECT DISTINCT b FROM Book b")
+    List<Book> admin_findAllBooks();
+
     @Query(" SELECT b FROM Book b" +
             " where " +
             " lower(b.title) like lower(concat('%', :title, '%')) ")
