@@ -23,7 +23,7 @@ import java.util.Set;
 @Table(name = "books")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Book extends BaseEntity {
+public class Book extends BaseEntity implements Comparable<Book> {
     @Column(unique = true)
     private String title;
     private Integer year;
@@ -75,6 +75,11 @@ public class Book extends BaseEntity {
     public void removeAuthors() {
         authors.forEach(author -> author.getBooks().remove(this));
         authors.clear();
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        return this.getTitle().compareTo(o.getTitle());
     }
 }
 

@@ -59,12 +59,12 @@ public class BookService implements IBookService {
 
     @Override
     public List<Book> findAll() {
-        return repository.findAllEager();
+        return repository.findAllEager().stream().sorted().collect(Collectors.toList());
     }
 
     @Override
     public List<Book> admin_findAll() {
-        return repository.admin_findAllBooks();
+        return repository.admin_findAllBooks().stream().sorted().collect(Collectors.toList());
     }
 
     @Override
@@ -155,6 +155,7 @@ public class BookService implements IBookService {
         book.setTitle(payload.getTitle());
         book.setYear(payload.getYear());
         book.setPrice(payload.getPrice());
+        book.setAvailable(payload.getAvailable());
         updateBookAuthors(book, authors);
 
         return book;

@@ -22,7 +22,6 @@ public class OrdersController {
 
     private final IOrderService orders;
 
-//    @Secured({"ROLE_ADMIN"})
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<RichOrder> getAllOrders() {

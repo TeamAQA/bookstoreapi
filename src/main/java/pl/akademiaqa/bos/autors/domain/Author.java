@@ -21,7 +21,7 @@ import java.util.Set;
 @Table(name = "authors")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
-public class Author extends BaseEntity {
+public class Author extends BaseEntity implements Comparable<Author> {
     String firstName;
     String lastName;
     @JsonIgnore
@@ -54,5 +54,10 @@ public class Author extends BaseEntity {
     public void removeBook(Book book) {
         books.remove(book);
         book.getAuthors().remove(this);
+    }
+
+    @Override
+    public int compareTo(Author o) {
+        return this.fullName.compareTo(o.getFullName());
     }
 }

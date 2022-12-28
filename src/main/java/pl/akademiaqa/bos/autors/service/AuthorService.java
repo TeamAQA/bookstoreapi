@@ -31,7 +31,7 @@ public class AuthorService implements IAuthorService {
 
     @Override
     public List<Author> findAll() {
-        return repository.findAll();
+        return repository.findAll().stream().sorted().collect(Collectors.toList());
     }
 
     @Override
