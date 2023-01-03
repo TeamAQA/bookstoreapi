@@ -9,6 +9,8 @@ public class UpdateAuthorPayload {
 
     @NotBlank
     String firstName;
-    @NotBlank
+
+    // TODO - BUG 1 - EDYCJA AUTORA Z PUSTYM POLEM lastName
+    // @NotBlank
     String lastName;
 }
