@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
+import pl.akademiaqa.bos.autors.api.response.UpdateAuthorResponse;
 import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
 import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
@@ -141,7 +142,7 @@ public class BookService implements IBookService {
                     repository.save(updatedBook);
                     return CreateUpdateBookResponse.success(updatedBook.getId());
                 })
-                .orElseGet(() -> createBook(id, payload));
+                .orElseGet(() -> CreateUpdateBookResponse.failure("Can not find book with id: " + id));
     }
 
     private Book toUpdatedBook(CreateUpdateBookPayload payload, Book book) {

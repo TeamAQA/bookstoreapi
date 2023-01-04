@@ -118,20 +118,9 @@ public class BooksController {
     public ResponseEntity<Object> updateBook(@PathVariable Long id, @Valid @RequestBody CreateUpdateBookPayload payload) {
         return bookService.updateBook(id, payload)
                 .handle(
-                        bookId -> {
-                            Optional<Book> book = bookService.findById(bookId);
-                            if (book.get().isPut()) {
-                                return ResponseEntity.ok(book);
-                            } else {
-                                return ResponseEntity.created(putBookUri()).body(book);
-                            }
-                        },
+                        bookId -> ResponseEntity.ok(bookService.findById(bookId)),
                         error -> ResponseEntity.notFound().build()
                 );
-    }
-
-    private URI putBookUri() {
-        return new CreatedURI("").uri();
     }
 
     @PatchMapping("/{id}")
