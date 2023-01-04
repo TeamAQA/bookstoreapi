@@ -10,7 +10,7 @@ public class UpdateAuthorPayload {
     @NotBlank
     String firstName;
 
-    // TODO - BUG 1 - EDYCJA AUTORA Z PUSTYM POLEM lastName
+    // TODO - BUG 1 - Można edytować autora z pustym polem lastName
     // @NotBlank
     String lastName;
 }
