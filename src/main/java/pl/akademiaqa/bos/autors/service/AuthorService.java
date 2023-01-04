@@ -69,8 +69,6 @@ public class AuthorService implements IAuthorService {
         return repository.findById(id)
                 .map(author -> {
                     Author updatedAuthor = toUpdatedAuthor(payload, author);
-                    // TODO usunąć zapisywanie do bazy
-                    // W testach sprawdzić POST -> PUT -> GET
                     repository.save(updatedAuthor);
                     return UpdateAuthorResponse.success(updatedAuthor.getId());
                 })
