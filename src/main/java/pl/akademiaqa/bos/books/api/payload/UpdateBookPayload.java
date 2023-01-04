@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Value
-public class CreateUpdateBookPayload {
+public class UpdateBookPayload {
     @NotBlank
     String title;
     @NotEmpty
@@ -16,7 +16,8 @@ public class CreateUpdateBookPayload {
     Integer year;
     @NotNull
     @DecimalMin(value = "1.00")
-    @DecimalMax(value = "1000.00")
+    // TODO - BUG 3 - Można edytować książkę z maksymalną ceną większą niż 1000.00, max cena to 100000.00
+    @DecimalMax(value = "100000.00")
     BigDecimal price;
     @NotNull
     @PositiveOrZero

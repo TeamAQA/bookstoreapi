@@ -7,8 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
-import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
-import pl.akademiaqa.bos.books.domain.Book;
+import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
 import pl.akademiaqa.bos.books.domain.RestBook;
 import pl.akademiaqa.bos.books.service.port.IBookService;
 
@@ -40,14 +39,14 @@ class BooksControllerTestIT {
         authorRepository.save(neal);
         authorRepository.save(jamesClear);
 
-        CreateUpdateBookPayload effectiveJava = new CreateUpdateBookPayload(
+        CreateBookPayload effectiveJava = new CreateBookPayload(
                 "Effective Java",
                 Set.of(joshua.getId()),
                 2005,
                 new BigDecimal("79.00"),
                 50L);
 
-        CreateUpdateBookPayload javaPuzzlers = new CreateUpdateBookPayload(
+        CreateBookPayload javaPuzzlers = new CreateBookPayload(
                 "Java Puzzlers",
                 Set.of(joshua.getId(), neal.getId()),
                 2018,

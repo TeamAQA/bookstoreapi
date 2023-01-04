@@ -10,8 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.akademiaqa.bos.autors.domain.Author;
 import pl.akademiaqa.bos.autors.domain.RestAuthor;
-import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
 import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
+import pl.akademiaqa.bos.books.api.payload.UpdateBookPayload;
 import pl.akademiaqa.bos.books.domain.RestBook;
 import pl.akademiaqa.bos.books.service.port.IBookService;
 import pl.akademiaqa.bos.books.domain.Book;
@@ -101,7 +102,7 @@ public class BooksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Object> createBook(@Valid @RequestBody CreateUpdateBookPayload payload) {
+    public ResponseEntity<Object> createBook(@Valid @RequestBody CreateBookPayload payload) {
         return bookService.createBook(payload)
                 .handle(
                         bookId -> ResponseEntity.created(bookUri(bookId)).body(bookService.findById(bookId)),
@@ -115,7 +116,7 @@ public class BooksController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> updateBook(@PathVariable Long id, @Valid @RequestBody CreateUpdateBookPayload payload) {
+    public ResponseEntity<Object> updateBook(@PathVariable Long id, @Valid @RequestBody UpdateBookPayload payload) {
         return bookService.updateBook(id, payload)
                 .handle(
                         bookId -> ResponseEntity.ok(bookService.findById(bookId)),

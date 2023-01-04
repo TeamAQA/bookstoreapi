@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
@@ -17,17 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
-import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
 import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
-import pl.akademiaqa.bos.books.api.response.CreateUpdateBookResponse;
-import pl.akademiaqa.bos.books.domain.Book;
 import pl.akademiaqa.bos.books.service.port.IBookService;
 import pl.akademiaqa.bos.books.service.port.ICatalogInitializerService;
 import pl.akademiaqa.bos.jpa.BaseEntity;
-import pl.akademiaqa.bos.order.api.payload.CreateOrderItemPayload;
-import pl.akademiaqa.bos.order.api.payload.CreateOrderPayload;
-import pl.akademiaqa.bos.order.api.payload.CreateRecipientPayload;
-import pl.akademiaqa.bos.order.api.response.CreateOrderResponse;
 import pl.akademiaqa.bos.order.service.port.IOrderService;
 
 import java.io.BufferedReader;
@@ -81,7 +74,7 @@ public class CatalogInitializerService implements ICatalogInitializerService {
                 .collect(Collectors.toSet());
 
 
-        CreateUpdateBookPayload bookPayload = new CreateUpdateBookPayload(
+        CreateBookPayload bookPayload = new CreateBookPayload(
                 csvBook.title,
                 authors,
                 csvBook.year,

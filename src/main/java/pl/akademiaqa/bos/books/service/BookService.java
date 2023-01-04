@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
-import pl.akademiaqa.bos.autors.api.response.UpdateAuthorResponse;
 import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
-import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
 import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
-import pl.akademiaqa.bos.books.api.response.CreateUpdateBookResponse;
+import pl.akademiaqa.bos.books.api.payload.UpdateBookPayload;
+import pl.akademiaqa.bos.books.api.response.CreateBookResponse;
 import pl.akademiaqa.bos.books.api.response.PartialUpdateBookResponse;
+import pl.akademiaqa.bos.books.api.response.UpdateBookResponse;
 import pl.akademiaqa.bos.books.service.port.IBookService;
 import pl.akademiaqa.bos.books.db.BookJpaRepository;
 import pl.akademiaqa.bos.books.domain.Book;
@@ -75,37 +76,16 @@ public class BookService implements IBookService {
 
     @Override
     @Transactional
-    public CreateUpdateBookResponse createBook(CreateUpdateBookPayload payload) {
+    public CreateBookResponse createBook(CreateBookPayload payload) {
         Book savedBook = repository.save(toBook(payload));
         if (savedBook == null) {
-            return CreateUpdateBookResponse.failure("Can not create a book");
+            return CreateBookResponse.failure("Can not create a book");
         }
-        return CreateUpdateBookResponse.success(savedBook.getId());
+        return CreateBookResponse.success(savedBook.getId());
     }
 
-    public CreateUpdateBookResponse createBook(Long id, CreateUpdateBookPayload payload) {
-        Book savedBook = repository.save(toBook(id, payload));
-        if (savedBook == null) {
-            return CreateUpdateBookResponse.failure("Can not create a book");
-        }
-        return CreateUpdateBookResponse.success(savedBook.getId());
-    }
-
-    private Book toBook(CreateUpdateBookPayload payload) {
+    private Book toBook(CreateBookPayload payload) {
         Book book = new Book(payload.getTitle(), payload.getYear(), payload.getPrice(), payload.getAvailable());
-        Set<Author> authors = payload.getAuthors()
-                .stream()
-                .map(authorId ->
-                        authorRepository.findById(authorId)
-                                .orElseThrow(() -> new IllegalStateException("Can not find author with given id: " + authorId))
-                ).collect(Collectors.toSet());
-        updateBookAuthors(book, authors);
-
-        return book;
-    }
-
-    private Book toBook(Long id, CreateUpdateBookPayload payload) {
-        Book book = new Book(id, payload.getTitle(), payload.getYear(), payload.getPrice(), payload.getAvailable());
         Set<Author> authors = payload.getAuthors()
                 .stream()
                 .map(authorId ->
@@ -134,18 +114,18 @@ public class BookService implements IBookService {
 
     @Override
     @Transactional
-    public CreateUpdateBookResponse updateBook(Long id, CreateUpdateBookPayload payload) {
+    public UpdateBookResponse updateBook(Long id, UpdateBookPayload payload) {
         return repository.findById(id)
                 .map(book -> {
                     Book updatedBook = toUpdatedBook(payload, book);
                     updatedBook.setPut(true);
                     repository.save(updatedBook);
-                    return CreateUpdateBookResponse.success(updatedBook.getId());
+                    return UpdateBookResponse.success(updatedBook.getId());
                 })
-                .orElseGet(() -> CreateUpdateBookResponse.failure("Can not find book with id: " + id));
+                .orElseGet(() -> UpdateBookResponse.failure("Can not find book with id: " + id));
     }
 
-    private Book toUpdatedBook(CreateUpdateBookPayload payload, Book book) {
+    private Book toUpdatedBook(UpdateBookPayload payload, Book book) {
         Set<Author> authors = payload.getAuthors()
                 .stream()
                 .map(authorId -> authorRepository.findById(authorId)
@@ -163,7 +143,7 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public CreateUpdateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload) {
+    public CreateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload) {
         return repository.findById(id)
                 .map(book -> {
                     if (payload.getFilename().isBlank()) {
@@ -172,9 +152,9 @@ public class BookService implements IBookService {
                     Upload savedUpload = upload.save(new UpdateBookCoverPayload(payload.getFile(), payload.getContentType(), payload.getFilename()));
                     book.setCoverId(savedUpload.getId());
                     repository.save(book);
-                    return CreateUpdateBookResponse.success(book.getId());
+                    return CreateBookResponse.success(book.getId());
                 })
-                .orElseGet(() -> CreateUpdateBookResponse.failure("Can not find a book with id: " + id));
+                .orElseGet(() -> CreateBookResponse.failure("Can not find a book with id: " + id));
     }
 
     @Override

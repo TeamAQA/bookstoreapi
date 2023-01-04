@@ -1,10 +1,12 @@
 package pl.akademiaqa.bos.books.service.port;
 
 import org.springframework.http.ResponseEntity;
-import pl.akademiaqa.bos.books.api.payload.CreateUpdateBookPayload;
+import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
 import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
-import pl.akademiaqa.bos.books.api.response.CreateUpdateBookResponse;
+import pl.akademiaqa.bos.books.api.payload.UpdateBookPayload;
+import pl.akademiaqa.bos.books.api.response.CreateBookResponse;
 import pl.akademiaqa.bos.books.api.response.PartialUpdateBookResponse;
+import pl.akademiaqa.bos.books.api.response.UpdateBookResponse;
 import pl.akademiaqa.bos.books.domain.Book;
 
 import java.util.List;
@@ -26,13 +28,13 @@ public interface IBookService {
 
     List<Book> findByTitleAndAuthor(String title, String author);
 
-    CreateUpdateBookResponse createBook(CreateUpdateBookPayload payload);
+    CreateBookResponse createBook(CreateBookPayload payload);
 
     ResponseEntity removeById(Long id);
 
-    CreateUpdateBookResponse updateBook(Long id, CreateUpdateBookPayload payload);
+    UpdateBookResponse updateBook(Long id, UpdateBookPayload payload);
 
-    CreateUpdateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload);
+    CreateBookResponse updateBookCover(Long id, UpdateBookCoverPayload payload);
 
     PartialUpdateBookResponse partialUpdateBook(Long id, Map<Object, Object> fields);
 
