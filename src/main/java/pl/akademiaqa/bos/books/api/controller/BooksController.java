@@ -146,7 +146,7 @@ public class BooksController {
     public ResponseEntity<Object> updateBookCover(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
         return bookService.updateBookCover(id, new UpdateBookCoverPayload(file.getBytes(), file.getContentType(), file.getOriginalFilename()))
                 .handle(
-                        bookId -> ResponseEntity.ok(bookService.findById(bookId)),
+                        bookId -> ResponseEntity.accepted().body(bookService.findById(bookId)),
                         error -> ResponseEntity.notFound().build()
                 );
     }
