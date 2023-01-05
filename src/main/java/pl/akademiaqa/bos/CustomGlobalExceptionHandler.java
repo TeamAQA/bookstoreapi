@@ -1,6 +1,8 @@
 package pl.akademiaqa.bos;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,6 +41,11 @@ public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler(PSQLException.class)
     public ResponseEntity<Object> handle(PSQLException ex) {
+        return handleError(HttpStatus.CONFLICT, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handle(DataIntegrityViolationException ex) {
         return handleError(HttpStatus.CONFLICT, List.of(ex.getMessage()));
     }
 
