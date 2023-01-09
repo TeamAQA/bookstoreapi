@@ -152,6 +152,14 @@ public class BookService implements IBookService {
                     Upload savedUpload = upload.save(new UpdateBookCoverPayload(payload.getFile(), payload.getContentType(), payload.getFilename()));
                     book.setCoverId(savedUpload.getId());
                     repository.save(book);
+
+                    int timeout = new SplittableRandom().nextInt(1000, 8000);
+                    try {
+                        Thread.sleep(timeout);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     return CreateBookResponse.success(book.getId());
                 })
                 .orElseGet(() -> CreateBookResponse.failure("Can not find a book with id: " + id));
