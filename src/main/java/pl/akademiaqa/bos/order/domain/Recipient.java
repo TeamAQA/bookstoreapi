@@ -1,5 +1,6 @@
 package pl.akademiaqa.bos.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,9 +25,12 @@ public class Recipient extends BaseEntity {
     private String city;
     private String zipCode;
     private String email;
+
     @CreatedDate
+    @JsonIgnore
     private LocalDateTime createdAt;
     @LastModifiedDate
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     public Recipient(String name, String phone, String street, String city, String zipCode, String email) {
