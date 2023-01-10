@@ -18,9 +18,14 @@ import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
 import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
 import pl.akademiaqa.bos.books.api.payload.UpdateBookCoverPayload;
+import pl.akademiaqa.bos.books.domain.Book;
 import pl.akademiaqa.bos.books.service.port.IBookService;
 import pl.akademiaqa.bos.books.service.port.ICatalogInitializerService;
 import pl.akademiaqa.bos.jpa.BaseEntity;
+import pl.akademiaqa.bos.order.api.payload.CreateOrderItemPayload;
+import pl.akademiaqa.bos.order.api.payload.CreateOrderPayload;
+import pl.akademiaqa.bos.order.api.payload.CreateRecipientPayload;
+import pl.akademiaqa.bos.order.api.response.CreateOrderResponse;
 import pl.akademiaqa.bos.order.service.port.IOrderService;
 
 import java.io.BufferedReader;
@@ -107,42 +112,42 @@ public class CatalogInitializerService implements ICatalogInitializerService {
 
     //
     private void placeOrder() {
-//        Book effectiveJava = bookService.findOneByTitle("Effective Java").orElseThrow(() -> new IllegalStateException("Can not find a book"));
-//        Book puzzlers = bookService.findOneByTitle("Java Puzzlers").orElseThrow(() -> new IllegalStateException("Can not find a book"));
-//
-//        CreateRecipientPayload recipient = CreateRecipientPayload
-//                .builder()
-//                .name("Janek Kowalski")
-//                .phone("745222111")
-//                .street("Sezamkowa")
-//                .city("Krakow")
-//                .zipCode("10-100")
-//                .email("janekkowalski@o2.pl")
-//                .build();
-//
-//        CreateOrderItemPayload item1 = CreateOrderItemPayload.builder()
-//                .bookId(effectiveJava.getId())
-//                .quantity(5)
-//                .build();
-//
-//        CreateOrderItemPayload item2 = CreateOrderItemPayload.builder()
-//                .bookId(puzzlers.getId())
-//                .quantity(5)
-//                .build();
-//
-//        CreateOrderPayload payload = CreateOrderPayload.builder()
-//                .item(item1)
-//                .item(item2)
-//                .recipient(recipient)
-//                .build();
-//
-//        CreateOrderResponse createOrderResponse = orderService.createOrder(payload);
-//
-//        Object result = createOrderResponse.handle(
-//                orderId -> "Created ORDER with id: " + orderId,
-//                error -> "Failed to created order: " + error
-//        );
-//        log.info(result.toString());
+        Book effectiveJava = bookService.findOneByTitle("Effective Java").orElseThrow(() -> new IllegalStateException("Can not find a book"));
+        Book puzzlers = bookService.findOneByTitle("Java Puzzlers").orElseThrow(() -> new IllegalStateException("Can not find a book"));
+
+        CreateRecipientPayload recipient = CreateRecipientPayload
+                .builder()
+                .name("Jan Kowalski")
+                .phone("745222111")
+                .street("Sezamkowa 10")
+                .city("Krakow")
+                .zipCode("30-004")
+                .email("janekkowalski@testmail.pl")
+                .build();
+
+        CreateOrderItemPayload item1 = CreateOrderItemPayload.builder()
+                .bookId(effectiveJava.getId())
+                .quantity(5)
+                .build();
+
+        CreateOrderItemPayload item2 = CreateOrderItemPayload.builder()
+                .bookId(puzzlers.getId())
+                .quantity(5)
+                .build();
+
+        CreateOrderPayload payload = CreateOrderPayload.builder()
+                .item(item1)
+                .item(item2)
+                .recipient(recipient)
+                .build();
+
+        CreateOrderResponse createOrderResponse = orderService.createOrder(payload);
+
+        Object result = createOrderResponse.handle(
+                orderId -> "Created ORDER with id: " + orderId,
+                error -> "Failed to created order: " + error
+        );
+        log.info(result.toString());
     }
 
     @Data
