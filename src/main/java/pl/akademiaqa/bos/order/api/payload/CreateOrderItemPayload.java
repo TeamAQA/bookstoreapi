@@ -14,6 +14,7 @@ public class CreateOrderItemPayload {
     Long bookId;
 
     @NotNull
-    @Min(1)
+    // TODO - BUG 6 - Można utworzyć zamówienie z ilością książek = 0
+    @Min(0)
     int quantity;
 }
