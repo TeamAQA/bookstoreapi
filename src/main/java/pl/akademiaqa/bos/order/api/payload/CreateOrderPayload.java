@@ -11,9 +11,9 @@ import java.util.List;
 @Builder
 public class CreateOrderPayload {
 
-    // TODO Usunąć walidację @NotEmpty, pozwoli na utworzenie order z pustą listą.
+    // TODO - BUG 4 - Można utworzyć zamówienie z pustą listą items.
     @Singular
-    @Valid @NotNull @NotEmpty
+    @Valid @NotNull
     List<CreateOrderItemPayload> items;
     @Valid @NotNull
     CreateRecipientPayload recipient;
