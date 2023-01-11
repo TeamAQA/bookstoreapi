@@ -33,7 +33,16 @@ public enum OrderStatus {
     },
     CANCELED,
     ABANDONED,
-    SHIPPED;
+    // TODO - BUG 8 - Można zmienić status zamówienia z SHIPPED na ABANDONED. Z tego statusu nie powinno się na nic zmieniać.
+    SHIPPED {
+        @Override
+        public UpdateStatusResult updateStatus(OrderStatus status) {
+            if (status == ABANDONED) {
+                return UpdateStatusResult.ok(ABANDONED);
+            }
+            return super.updateStatus(status);
+        }
+    };
 
     public static Optional<OrderStatus> parseString(String value) {
         return Arrays.stream(values())
