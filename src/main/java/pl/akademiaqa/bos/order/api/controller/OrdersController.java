@@ -59,6 +59,7 @@ public class OrdersController {
     @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    // TODO - BUG 9 - Usunięcie zamówienia nie przywraca dostępności książek
     public ResponseEntity deleteOrder(@PathVariable Long id) {
         return orders.deleteById(id);
     }
