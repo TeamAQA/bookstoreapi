@@ -84,7 +84,7 @@ public class CatalogInitializerService implements ICatalogInitializerService {
                 authors,
                 csvBook.year,
                 csvBook.amount,
-                50L);
+                100L);
 
         bookService.createBook(bookPayload)
                 .handle(
