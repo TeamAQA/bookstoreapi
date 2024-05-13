@@ -41,12 +41,12 @@ public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler(PSQLException.class)
     public ResponseEntity<Object> handle(PSQLException ex) {
-        return handleError(HttpStatus.CONFLICT, List.of(ex.getMessage()));
+        return handleError(HttpStatus.CONFLICT, List.of("Operation could not be performed."));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handle(DataIntegrityViolationException ex) {
-        return handleError(HttpStatus.CONFLICT, List.of(ex.getMessage()));
+        return handleError(HttpStatus.CONFLICT, List.of("Operation could not be performed."));
     }
 
     private ResponseEntity<Object> handleError(HttpStatus status, List<String> errors) {

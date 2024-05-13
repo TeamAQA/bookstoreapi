@@ -12,6 +12,7 @@ import pl.akademiaqa.bos.autors.api.response.UpdateAuthorResponse;
 import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
 import pl.akademiaqa.bos.autors.service.port.IAuthorService;
+import pl.akademiaqa.bos.commons.IsValidName;
 import pl.akademiaqa.bos.commons.StringBuilderPlus;
 
 import java.lang.reflect.Field;
@@ -91,8 +92,10 @@ public class AuthorService implements IAuthorService {
                     fields.forEach((key, value) -> {
                         Field field = ReflectionUtils.findField(Author.class, (String) key);
                         field.setAccessible(true);
+
                         if (field.getName().equals("id")) {
-                        } else if (field.getName().equals("firstName")) {
+                        }
+                        else if (field.getName().equals("firstName")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
                                 errors.appendLine("firstName must not be blank");
@@ -101,6 +104,16 @@ public class AuthorService implements IAuthorService {
                             if (value.getClass() != String.class) {
                                 isError.set(true);
                                 errors.appendLine("firstName must be a string");
+                                return;
+                            }
+                            if(!IsValidName.isValidName((String) value)){
+                                isError.set(true);
+                                errors.appendLine("firstName must contain only letters, spaces or -");
+                                return;
+                            }
+                            if (value.toString().length() < 3 || value.toString().length() > 128) {
+                                isError.set(true);
+                                errors.appendLine("firstName size must be between 3 and 128");
                                 return;
                             }
                             ReflectionUtils.setField(field, autor, value);
@@ -113,6 +126,16 @@ public class AuthorService implements IAuthorService {
                             if (value.getClass() != String.class) {
                                 isError.set(true);
                                 errors.appendLine("lastName must be a string");
+                                return;
+                            }
+                            if(!IsValidName.isValidName((String) value)){
+                                isError.set(true);
+                                errors.appendLine("lastName must contain only letters, spaces or -");
+                                return;
+                            }
+                            if (value.toString().length() < 3 || value.toString().length() > 128) {
+                                isError.set(true);
+                                errors.appendLine("lastName size must be between 3 and 128");
                                 return;
                             }
                             ReflectionUtils.setField(field, autor, value);
