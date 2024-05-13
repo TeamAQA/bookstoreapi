@@ -5,7 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 
 public class NameValidator implements ConstraintValidator<ValidName, String> {
 
-    private static final String TEXT_PATTERN = "^(?! )[\\p{L}-]+(?:[\\s-][\\p{L}-]+)*(?<! )$";
+    private static final String TEXT_PATTERN = "^(?! )[\\p{L}-.]+(?:[\\s-][\\p{L}-]+)*(?<! )$";
 
     @Override
     public void initialize(ValidName constraintAnnotation) {
