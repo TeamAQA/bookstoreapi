@@ -80,11 +80,11 @@ public class CatalogInitializerService implements ICatalogInitializerService {
 
 
         CreateBookPayload bookPayload = new CreateBookPayload(
-                csvBook.title,
+                csvBook.title.trim(),
                 authors,
                 csvBook.year,
                 csvBook.amount,
-                100L);
+                100);
 
         bookService.createBook(bookPayload)
                 .handle(

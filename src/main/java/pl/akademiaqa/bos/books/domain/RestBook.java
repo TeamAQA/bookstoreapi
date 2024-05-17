@@ -14,6 +14,6 @@ public class RestBook {
     Integer year;
     BigDecimal price;
     String coverUrl;
-    Long available;
+    Integer available;
     Set<RestAuthor> authors;
 }

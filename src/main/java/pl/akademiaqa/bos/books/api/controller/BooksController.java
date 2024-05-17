@@ -46,6 +46,9 @@ public class BooksController {
         } else if (title.isPresent()) {
             books = bookService.findByTitle(title.get());
         } else if (author.isPresent()) {
+            // TODO - BUG 2 - GET /books?author=pa - Wyszukanie książki po autorze ?author=pa -
+            //  jeżeli książka ma np 2 autorów z imieniem/nazwiskiem “pa” to w rezultacie książka pokazuje się 2 razy
+            //  a powinna pokazać się raz.
             books = bookService.findByAuthor(author.get());
         } else {
             books = bookService.findAll();

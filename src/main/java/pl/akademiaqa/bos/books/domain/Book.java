@@ -10,6 +10,7 @@ import pl.akademiaqa.bos.autors.domain.Author;
 import pl.akademiaqa.bos.jpa.BaseEntity;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -29,7 +30,7 @@ public class Book extends BaseEntity implements Comparable<Book> {
     private Integer year;
     private BigDecimal price;
     private Long coverId;
-    private Long available;
+    private Integer available;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable
@@ -47,14 +48,14 @@ public class Book extends BaseEntity implements Comparable<Book> {
     @JsonIgnore
     boolean isPut;
 
-    public Book(String title, Integer year, BigDecimal price, Long available) {
+    public Book(String title, Integer year, BigDecimal price, Integer available) {
         this.title = title;
         this.year = year;
         this.price = price;
         this.available = available;
     }
 
-    public Book(Long id, String title, Integer year, BigDecimal price, Long available) {
+    public Book(Long id, String title, Integer year, BigDecimal price, Integer available) {
         this.id = id;
         this.title = title;
         this.year = year;

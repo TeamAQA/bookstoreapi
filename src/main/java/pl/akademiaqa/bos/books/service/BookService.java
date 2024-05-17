@@ -77,6 +77,7 @@ public class BookService implements IBookService {
     @Override
     @Transactional
     public CreateBookResponse createBook(CreateBookPayload payload) {
+        System.out.println("SAVE TO DB: " + payload);
         Book savedBook = repository.save(toBook(payload));
         if (savedBook == null) {
             return CreateBookResponse.failure("Can not create a book");

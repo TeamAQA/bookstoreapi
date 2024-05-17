@@ -21,5 +21,5 @@ public class UpdateBookPayload {
     BigDecimal price;
     @NotNull
     @PositiveOrZero
-    Long available;
+    Integer available;
 }
