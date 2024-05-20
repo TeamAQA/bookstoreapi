@@ -199,7 +199,6 @@ public class BookService implements IBookService {
                             // TODO - BUG 5 - (PUT /books:id) - Można edytować cenę książki z niepoprawnym formatem.
                             //  Nie ma sprawdzenia validacji ceny na dwa miejsca po przecinku.
                             //  Cena może być ustawiona na "price": 9.9999911
-
                             if (String.valueOf(value).equals("null")) {
                                 isError.set(true);
                                 errors.appendLine("price can not be empty");
@@ -229,11 +228,6 @@ public class BookService implements IBookService {
                                 errors.appendLine("available can not be empty");
                                 return;
                             }
-
-                            // TODO - BUG 5 - (PUT /books:id) - Można edytować cenę książki z niepoprawnym formatem.
-                            //  Nie ma sprawdzenia validacji ceny na dwa miejsca po przecinku.
-                            //  Cena może być ustawiona na "price": 9.9999911
-
                             if (String.valueOf(value).equals("null")) {
                                 isError.set(true);
                                 errors.appendLine("available can not be empty");
