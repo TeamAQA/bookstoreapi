@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.SocketUtils;
 import pl.akademiaqa.bos.autors.db.AuthorJpaRepository;
 import pl.akademiaqa.bos.autors.domain.Author;
 import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
@@ -183,48 +184,89 @@ public class BookService implements IBookService {
                         Field field = ReflectionUtils.findField(Book.class, (String) key);
                         field.setAccessible(true);
 
+                        // ID
                         if (field.getName().equals("id")) {
                             // ignore id
-                        } else if (field.getName().equals("price")) {
+                        }
+                        // PRICE
+                        else if (field.getName().equals("price")) {
                             if (value == null) {
                                 isError.set(true);
-                                errors.appendLine("price must not be null");
+                                errors.appendLine("price can not be empty");
                                 return;
                             }
 
-                            if (value.getClass() == LinkedHashMap.class) {
-                                BigDecimal price = book.getPrice();
-                                BigDecimal newPrice = price.add(new BigDecimal(1));
-                                ReflectionUtils.setField(field, book, newPrice);
-                                return;
-                            }
+                            // TODO - BUG 5 - (PUT /books:id) - Można edytować cenę książki z niepoprawnym formatem.
+                            //  Nie ma sprawdzenia validacji ceny na dwa miejsca po przecinku.
+                            //  Cena może być ustawiona na "price": 9.9999911
 
                             if (String.valueOf(value).equals("null")) {
                                 isError.set(true);
-                                errors.appendLine("price must not be null");
+                                errors.appendLine("price can not be empty");
                                 return;
                             }
                             if (String.valueOf(value).isBlank()) {
                                 isError.set(true);
-                                errors.appendLine("price must not be empty");
+                                errors.appendLine("price can not be empty");
                                 return;
                             }
                             if (Double.valueOf(String.valueOf(value)) < 1) {
                                 isError.set(true);
-                                errors.appendLine("price must be greater than or equal to 1.00");
+                                errors.appendLine("price must be greater than or equal to 1");
                                 return;
                             }
                             if (Double.valueOf(String.valueOf(value)) > 1000) {
                                 isError.set(true);
-                                errors.appendLine("price must be less than or equal to 1000.00");
+                                errors.appendLine("price must be less than or equal to 1000");
                                 return;
                             }
                             ReflectionUtils.setField(field, book, new BigDecimal(String.valueOf(value)));
+                        }
+                        // AVAILABLE
+                        else if (field.getName().equals("available")) {
+                            if (value == null) {
+                                isError.set(true);
+                                errors.appendLine("available can not be empty");
+                                return;
+                            }
 
-                        } else if (field.getName().equals("year")) {
+                            // TODO - BUG 5 - (PUT /books:id) - Można edytować cenę książki z niepoprawnym formatem.
+                            //  Nie ma sprawdzenia validacji ceny na dwa miejsca po przecinku.
+                            //  Cena może być ustawiona na "price": 9.9999911
+
+                            if (String.valueOf(value).equals("null")) {
+                                isError.set(true);
+                                errors.appendLine("available can not be empty");
+                                return;
+                            }
+                            if (String.valueOf(value).isBlank()) {
+                                isError.set(true);
+                                errors.appendLine("available can not be empty");
+                                return;
+                            }
+
+                            if (value.getClass() != Integer.class) {
+                                isError.set(true);
+                                errors.appendLine("available must be an integer");
+                                return;
+                            }
+
+                            if (Integer.valueOf(String.valueOf(value)) < 1) {
+                                isError.set(true);
+                                errors.appendLine("available must be greater than or equal to 1");
+                                return;
+                            }
+                            if (Integer.valueOf(String.valueOf(value)) > 10000) {
+                                isError.set(true);
+                                errors.appendLine("available must be less than or equal to 10000");
+                                return;
+                            }
+                            ReflectionUtils.setField(field, book, new Integer(String.valueOf(value)));
+                        }
+                        else if (field.getName().equals("year")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
-                                errors.appendLine("year must not be null");
+                                errors.appendLine("year can not be empty");
                                 return;
                             }
                             if (value.getClass() != Integer.class) {
@@ -232,12 +274,22 @@ public class BookService implements IBookService {
                                 errors.appendLine("year must be a number");
                                 return;
                             }
+                            if (Integer.parseInt(value.toString()) < 1900) {
+                                isError.set(true);
+                                errors.appendLine("year can not be before 1900");
+                                return;
+                            }
                             ReflectionUtils.setField(field, book, value);
 
                         } else if (field.getName().equals("title")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
-                                errors.appendLine("title must not be blank");
+                                errors.appendLine("title can not be empty");
+                                return;
+                            }
+                            if (value.toString().startsWith(" ") || value.toString().endsWith(" ")) {
+                                isError.set(true);
+                                errors.appendLine("title can not start or end with empty spaces");
                                 return;
                             }
                             if (value.getClass() != String.class) {
@@ -248,9 +300,9 @@ public class BookService implements IBookService {
                             ReflectionUtils.setField(field, book, value);
 
                         } else if (field.getName().equals("authors")) {
-                            if (value == null) {
+                            if (value == null || value.toString().equals("[]")) {
                                 isError.set(true);
-                                errors.appendLine("authors must not be blank");
+                                errors.appendLine("authors can not be empty");
                                 return;
                             }
                             if (value.getClass() != ArrayList.class) {
