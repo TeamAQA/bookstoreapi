@@ -28,7 +28,7 @@ public class ApplicationStartup implements CommandLineRunner {
     CommandLineRunner run(UserService userService) {
         return args -> {
             userService.saveRole(new Role("ROLE_ADMIN"));
-            userService.saveUser(new User("Admin", "admin", "123456"));
+            userService.saveUser(new User("Admin", "admin", "MkRBpjDAyGsQox&2xhg8"));
             userService.addRoleToUser("admin", "ROLE_ADMIN");
         };
     }
