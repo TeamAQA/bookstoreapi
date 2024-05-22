@@ -15,6 +15,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ValidationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +35,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
+
+            System.out.println("!!! DEBUG: AUTHORIZATION HEADER: " + authorizationHeader);
+
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
                     String token = authorizationHeader.substring("Bearer ".length());
@@ -51,13 +55,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception e) {
-                    log.error("Error logging in: {}", e.getMessage());
-                    response.setStatus(FORBIDDEN.value());
-//                    response.sendError(FORBIDDEN.value());
-                    Map<String, String> errors = new HashMap<>();
-                    errors.put("error", e.getMessage());
-                    response.setContentType(APPLICATION_JSON_VALUE);
-                    new ObjectMapper().writeValue(response.getOutputStream(), errors);
+                    // TODO - BUG 6 (PATCH /books/:bookId/cover) - (niepoprawny status) invalid token zwraca 500 Internal Server Error
+                    //  Próba edycji okładki książki z niepoprawnym tokenem, np wziętym z JWT.io zwraca 500 zamiast 4xx.
+                    throw new ValidationException("Invalid token");
 
                 }
             } else {

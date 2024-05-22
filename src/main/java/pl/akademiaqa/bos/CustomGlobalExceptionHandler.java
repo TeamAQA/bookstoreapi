@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ValidationException;
+import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,6 +38,16 @@ public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Object> handle(IllegalStateException ex) {
+        return handleError(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handle(AccessDeniedException ex) {
+        return handleError(HttpStatus.FORBIDDEN, List.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handle(ValidationException ex) {
         return handleError(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
     }
 
