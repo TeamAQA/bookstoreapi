@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.akademiaqa.bos.autors.domain.Author;
+import pl.akademiaqa.bos.books.api.payload.CreateBookPayload;
 import pl.akademiaqa.bos.books.db.BookJpaRepository;
 import pl.akademiaqa.bos.books.domain.Book;
 import pl.akademiaqa.bos.order.api.payload.CreateOrderItemPayload;
@@ -114,12 +116,16 @@ public class OrderService implements IOrderService {
 
     private OrderItem toOrderItem(CreateOrderItemPayload createOrderItemPayload) {
         int requestedQuantity = createOrderItemPayload.getQuantity();
-        Book book = bookRepository.getOne(createOrderItemPayload.getBookId());
-        if (book.getAvailable() >= requestedQuantity) {
-            return new OrderItem(book, requestedQuantity);
+        Optional<Book> book = bookRepository.findById(createOrderItemPayload.getBookId());
+
+        if (!book.isPresent()) {
+            throw new IllegalStateException("Can not find book with given id: " + createOrderItemPayload.getBookId());
         }
-        throw new IllegalArgumentException("To many copies of book " + book.getId() +
-                " requested: " + requestedQuantity + " of " + book.getAvailable() + " available ");
+
+        if (book.get().getAvailable() >= requestedQuantity) {
+            return new OrderItem(book.get(), requestedQuantity);
+        }
+        throw new IllegalArgumentException("to many copies of book requested: " + requestedQuantity + " of " + book.get().getAvailable() + " available");
     }
 
     private Set<Book> reduceBooks(Order order) {

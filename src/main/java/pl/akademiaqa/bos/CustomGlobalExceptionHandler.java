@@ -5,10 +5,12 @@ import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
 import java.nio.file.AccessDeniedException;
 import java.util.Date;
@@ -56,16 +58,22 @@ public class CustomGlobalExceptionHandler {
         return handleError(HttpStatus.CONFLICT, List.of("operation could not be performed"));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handle(HttpMessageNotReadableException ex) {
+        return handleError(HttpStatus.BAD_REQUEST, List.of("operation could not be performed"));
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handle(DataIntegrityViolationException ex) {
         return handleError(HttpStatus.CONFLICT, List.of("operation could not be performed"));
     }
 
-    private ResponseEntity<Object> handleError(HttpStatus status, List<String> errors) {
+    private ResponseEntity<Object> handleError(HttpStatus status, List<String> errorMessage) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status.value());
-        body.put("errors", errors);
+        body.put("error", status.getReasonPhrase());
+        body.put("message", errorMessage);
         return new ResponseEntity<>(body, status);
     }
 }
