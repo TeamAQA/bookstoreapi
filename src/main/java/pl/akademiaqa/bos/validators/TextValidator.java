@@ -3,6 +3,9 @@ package pl.akademiaqa.bos.validators;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import static pl.akademiaqa.bos.commons.IsMinOrMax.isBelowMinOrAboveMax;
+import static pl.akademiaqa.bos.commons.IsNullOrEmpty.isNullOrEmpty;
+
 public class TextValidator implements ConstraintValidator<ValidText, String> {
 
     private static final String TEXT_PATTERN = "^(?! )[A-Za-z-]+(?:[\\s-][A-Za-z-]+)*(?<! )$";
@@ -14,8 +17,11 @@ public class TextValidator implements ConstraintValidator<ValidText, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return true; // null values are valid, use @NotNull to validate null values
+        if (isNullOrEmpty(value)) {
+            return false;
+        }
+        if (isBelowMinOrAboveMax(value)) {
+            return false;
         }
         return value.matches(TEXT_PATTERN);
     }

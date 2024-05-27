@@ -9,11 +9,9 @@ import javax.validation.constraints.Size;
 @Value
 public class CreateAuthorPayload {
 
-    @NotBlank(message = "can not be empty")
-    @ValidName @Size(min = 3, max = 128)
+    @ValidName
     String firstName;
 
-    @NotBlank(message = "can not be empty")
-    @ValidName @Size(min = 3, max = 128)
+    @ValidName
     String lastName;
 }
