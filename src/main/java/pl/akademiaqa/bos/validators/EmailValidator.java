@@ -6,11 +6,11 @@ import javax.validation.ConstraintValidatorContext;
 import static pl.akademiaqa.bos.commons.IsMinOrMax.isBelowMinOrAboveMax;
 import static pl.akademiaqa.bos.commons.IsNullOrEmpty.isNullOrEmpty;
 
-public class NameValidator implements ConstraintValidator<ValidName, String> {
-    private static final String TEXT_PATTERN = "^[\\p{L}][\\p{L}\\s-.]*[^\\s]$";
+public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
+    private static final String TEXT_PATTERN = "^(?!.*\\.\\.)[\\w!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
     @Override
-    public void initialize(ValidName constraintAnnotation) {
+    public void initialize(ValidEmail constraintAnnotation) {
         // Initialization logic, if needed
     }
 

@@ -3,25 +3,27 @@ package pl.akademiaqa.bos.order.api.payload;
 import lombok.Builder;
 import lombok.Data;
 import pl.akademiaqa.bos.order.domain.Recipient;
+import pl.akademiaqa.bos.validators.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
 public class CreateRecipientPayload {
 
-    @NotBlank
+    @ValidName
     String name;
-    @NotBlank
+    @ValidPhoneNumber
     String phone;
-    @NotBlank
+    @ValidStreet
     String street;
-    @NotBlank
+    @ValidName
     String city;
-    @NotBlank
+    @ValidZipCode
     String zipCode;
-    @Email
+    @ValidEmail
     String email;
 
     public Recipient toRecipient() {

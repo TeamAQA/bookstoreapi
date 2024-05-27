@@ -1,16 +1,20 @@
 package pl.akademiaqa.bos.validators;
 
+import pl.akademiaqa.bos.commons.IsMinOrMax;
+import pl.akademiaqa.bos.commons.IsNullOrEmpty;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import static pl.akademiaqa.bos.commons.IsMinOrMax.isBelowMinOrAboveMax;
-import static pl.akademiaqa.bos.commons.IsNullOrEmpty.isNullOrEmpty;
+import static pl.akademiaqa.bos.commons.IsMinOrMax.*;
+import static pl.akademiaqa.bos.commons.IsNullOrEmpty.*;
 
-public class NameValidator implements ConstraintValidator<ValidName, String> {
-    private static final String TEXT_PATTERN = "^[\\p{L}][\\p{L}\\s-.]*[^\\s]$";
+public class StreetValidator implements ConstraintValidator<ValidStreet, String> {
+    private static final String TEXT_PATTERN = "^(?! )[\\p{L}][\\p{L}\\d]*(?:[\\s-.][\\p{L}\\d]+)*(?<! )$";
+
 
     @Override
-    public void initialize(ValidName constraintAnnotation) {
+    public void initialize(ValidStreet constraintAnnotation) {
         // Initialization logic, if needed
     }
 
@@ -25,3 +29,5 @@ public class NameValidator implements ConstraintValidator<ValidName, String> {
         return value.matches(TEXT_PATTERN);
     }
 }
+
+

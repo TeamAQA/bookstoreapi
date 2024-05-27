@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPrice {
-    String message() default "invalid format";
+    String message() default "incorrect input data";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

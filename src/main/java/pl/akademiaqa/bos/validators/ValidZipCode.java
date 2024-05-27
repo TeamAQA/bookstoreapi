@@ -7,12 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = TrimValidator.class)
+@Constraint(validatedBy = ZipCodeValidator.class)
 @Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidTrim {
+public @interface ValidZipCode {
     String message() default "incorrect input data";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
-

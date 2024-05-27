@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidText {
-    String message() default "must contain only letters, spaces or -";
+    String message() default "incorrect input data";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
