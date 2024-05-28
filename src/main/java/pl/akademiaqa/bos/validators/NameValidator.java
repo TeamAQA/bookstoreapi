@@ -7,7 +7,7 @@ import static pl.akademiaqa.bos.commons.IsMinOrMax.isBelowMinOrAboveMax;
 import static pl.akademiaqa.bos.commons.IsNullOrEmpty.isNullOrEmpty;
 
 public class NameValidator implements ConstraintValidator<ValidName, String> {
-    private static final String TEXT_PATTERN = "^[\\p{L}][\\p{L}\\s-.]*[^\\s]$";
+    private static final String TEXT_PATTERN = "^[\\p{L}][\\p{L}\\s-.]*[\\p{L}]$";
 
     @Override
     public void initialize(ValidName constraintAnnotation) {
