@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class CreateOrderItemPayload {
 
-    @NotNull(message = "can not be empty")
+    @NotNull(message = "incorrect input data")
     Long bookId;
 
-    @NotNull(message = "can not be empty")
-    @Min(value = 1, message = "must be greater than or equal to 1")
+    @NotNull(message = "incorrect input data")
+    @Min(value = 1, message = "incorrect input data")
     int quantity;
 }
