@@ -192,7 +192,7 @@ public class BookService implements IBookService {
                         else if (field.getName().equals("price")) {
                             if (value == null) {
                                 isError.set(true);
-                                errors.appendLine("price can not be empty");
+                                errors.appendLine("price incorrect input data");
                                 return;
                             }
 
@@ -201,22 +201,22 @@ public class BookService implements IBookService {
                             //  Cena może być ustawiona na "price": 9.9999911
                             if (String.valueOf(value).equals("null")) {
                                 isError.set(true);
-                                errors.appendLine("price can not be empty");
+                                errors.appendLine("price incorrect input data");
                                 return;
                             }
                             if (String.valueOf(value).isBlank()) {
                                 isError.set(true);
-                                errors.appendLine("price can not be empty");
+                                errors.appendLine("price incorrect input data");
                                 return;
                             }
                             if (Double.valueOf(String.valueOf(value)) < 1) {
                                 isError.set(true);
-                                errors.appendLine("price must be greater than or equal to 1");
+                                errors.appendLine("price incorrect input data");
                                 return;
                             }
                             if (Double.valueOf(String.valueOf(value)) > 1000) {
                                 isError.set(true);
-                                errors.appendLine("price must be less than or equal to 1000");
+                                errors.appendLine("price incorrect input data");
                                 return;
                             }
                             ReflectionUtils.setField(field, book, new BigDecimal(String.valueOf(value)));
@@ -225,34 +225,34 @@ public class BookService implements IBookService {
                         else if (field.getName().equals("available")) {
                             if (value == null) {
                                 isError.set(true);
-                                errors.appendLine("available can not be empty");
+                                errors.appendLine("available incorrect input data");
                                 return;
                             }
                             if (String.valueOf(value).equals("null")) {
                                 isError.set(true);
-                                errors.appendLine("available can not be empty");
+                                errors.appendLine("available incorrect input data");
                                 return;
                             }
                             if (String.valueOf(value).isBlank()) {
                                 isError.set(true);
-                                errors.appendLine("available can not be empty");
+                                errors.appendLine("available incorrect input data");
                                 return;
                             }
 
                             if (value.getClass() != Integer.class) {
                                 isError.set(true);
-                                errors.appendLine("available must be an integer");
+                                errors.appendLine("available incorrect input data");
                                 return;
                             }
 
                             if (Integer.valueOf(String.valueOf(value)) < 1) {
                                 isError.set(true);
-                                errors.appendLine("available must be greater than or equal to 1");
+                                errors.appendLine("available incorrect input data");
                                 return;
                             }
                             if (Integer.valueOf(String.valueOf(value)) > 10000) {
                                 isError.set(true);
-                                errors.appendLine("available must be less than or equal to 10000");
+                                errors.appendLine("available incorrect input data");
                                 return;
                             }
                             ReflectionUtils.setField(field, book, new Integer(String.valueOf(value)));
@@ -260,17 +260,17 @@ public class BookService implements IBookService {
                         else if (field.getName().equals("year")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
-                                errors.appendLine("year can not be empty");
+                                errors.appendLine("year incorrect input data");
                                 return;
                             }
                             if (value.getClass() != Integer.class) {
                                 isError.set(true);
-                                errors.appendLine("year must be a number");
+                                errors.appendLine("year incorrect input data");
                                 return;
                             }
                             if (Integer.parseInt(value.toString()) < 1900) {
                                 isError.set(true);
-                                errors.appendLine("year can not be before 1900");
+                                errors.appendLine("year incorrect input data");
                                 return;
                             }
                             ReflectionUtils.setField(field, book, value);
@@ -278,17 +278,17 @@ public class BookService implements IBookService {
                         } else if (field.getName().equals("title")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
-                                errors.appendLine("title can not be empty");
+                                errors.appendLine("title incorrect input data");
                                 return;
                             }
                             if (value.toString().startsWith(" ") || value.toString().endsWith(" ")) {
                                 isError.set(true);
-                                errors.appendLine("title can not start or end with empty spaces");
+                                errors.appendLine("title incorrect input data");
                                 return;
                             }
                             if (value.getClass() != String.class) {
                                 isError.set(true);
-                                errors.appendLine("title must be a string");
+                                errors.appendLine("title incorrect input data");
                                 return;
                             }
                             ReflectionUtils.setField(field, book, value);
@@ -296,12 +296,12 @@ public class BookService implements IBookService {
                         } else if (field.getName().equals("authors")) {
                             if (value == null || value.toString().equals("[]")) {
                                 isError.set(true);
-                                errors.appendLine("authors can not be empty");
+                                errors.appendLine("authors incorrect input data");
                                 return;
                             }
                             if (value.getClass() != ArrayList.class) {
                                 isError.set(true);
-                                errors.appendLine("authors must be an array");
+                                errors.appendLine("authors incorrect input data");
                                 return;
                             }
 

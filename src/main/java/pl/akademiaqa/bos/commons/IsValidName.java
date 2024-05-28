@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class IsValidName {
 
-    private static final String TEXT_PATTERN = "^(?! )[\\p{L}-]+(?:[\\s-][\\p{L}-]+)*(?<! )$";
+    private static final String TEXT_PATTERN = "^[\\p{L}][\\p{L}\\s-.]*[\\p{L}]$";
     private static final Pattern pattern = Pattern.compile(TEXT_PATTERN);
 
     public static boolean isValidName(String text) {

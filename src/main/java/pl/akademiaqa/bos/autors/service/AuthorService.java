@@ -98,44 +98,44 @@ public class AuthorService implements IAuthorService {
                         else if (field.getName().equals("firstName")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
-                                errors.appendLine("firstName must not be blank");
+                                errors.appendLine("firstName incorrect input data");
                                 return;
                             }
                             if (value.getClass() != String.class) {
                                 isError.set(true);
-                                errors.appendLine("firstName must be a string");
+                                errors.appendLine("firstName incorrect input data");
                                 return;
                             }
                             if(!IsValidName.isValidName((String) value)){
                                 isError.set(true);
-                                errors.appendLine("firstName must contain only letters, spaces or -");
+                                errors.appendLine("firstName incorrect input data");
                                 return;
                             }
                             if (value.toString().length() < 3 || value.toString().length() > 128) {
                                 isError.set(true);
-                                errors.appendLine("firstName size must be between 3 and 128");
+                                errors.appendLine("firstName incorrect input data");
                                 return;
                             }
                             ReflectionUtils.setField(field, autor, value);
                         } else if (field.getName().equals("lastName")) {
                             if (isNullOrEmpty(value)) {
                                 isError.set(true);
-                                errors.appendLine("lastName must not be blank");
+                                errors.appendLine("lastName incorrect input data");
                                 return;
                             }
                             if (value.getClass() != String.class) {
                                 isError.set(true);
-                                errors.appendLine("lastName must be a string");
+                                errors.appendLine("lastName incorrect input data");
                                 return;
                             }
                             if(!IsValidName.isValidName((String) value)){
                                 isError.set(true);
-                                errors.appendLine("lastName must contain only letters, spaces or -");
+                                errors.appendLine("lastName incorrect input data");
                                 return;
                             }
                             if (value.toString().length() < 3 || value.toString().length() > 128) {
                                 isError.set(true);
-                                errors.appendLine("lastName size must be between 3 and 128");
+                                errors.appendLine("lastName incorrect input data");
                                 return;
                             }
                             ReflectionUtils.setField(field, autor, value);
