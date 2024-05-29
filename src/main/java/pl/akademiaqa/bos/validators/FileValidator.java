@@ -18,15 +18,15 @@ public class FileValidator {
 
     public static void validateFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw new ValidationException("File cannot be null or empty");
+            throw new ValidationException("file incorrect input data");
         }
 
         if (!ALLOWED_CONTENT_TYPES.contains(file.getContentType())) {
-            throw new ValidationException("Invalid file type. Only PNG, JPEG, and JPG are allowed.");
+            throw new ValidationException("file incorrect input data");
         }
 
         if (file.getSize() > MAX_FILE_SIZE) {
-            throw new ValidationException("File size exceeds the maximum allowed size of 200 KB");
+            throw new ValidationException("file incorrect input data");
         }
     }
 }

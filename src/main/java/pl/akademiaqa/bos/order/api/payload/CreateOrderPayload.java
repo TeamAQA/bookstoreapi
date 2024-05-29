@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class CreateOrderPayload {
 
-    // TODO - BUG 4 - Można utworzyć zamówienie z pustą listą items.
+    // TODO - BUG 7 (POST /orders) - Można utworzyć zamówienie z pustą listą items.
     @Singular
     @Valid @NotNull
     List<CreateOrderItemPayload> items;

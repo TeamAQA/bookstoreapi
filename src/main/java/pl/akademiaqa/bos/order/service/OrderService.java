@@ -75,9 +75,7 @@ public class OrderService implements IOrderService {
                 .map(order -> {
                     UpdateStatusResult updateStatusResult = order.updateStatus(status);
                     if (updateStatusResult.isRevoked()) {
-                        System.out.println("revoked");
-                        // TODO - BUG 7 - Zmiania statusu zamówienia na CANCELED nie przywraca dostępności książek.
-                        // bookRepository.saveAll(revokeBooks(order));
+                         bookRepository.saveAll(revokeBooks(order));
                     }
                     repository.save(order);
                     Optional<RichOrder> richOrder = repository.findById(id).map(this::toRichOrder);

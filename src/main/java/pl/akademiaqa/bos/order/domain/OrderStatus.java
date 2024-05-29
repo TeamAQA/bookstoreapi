@@ -32,8 +32,11 @@ public enum OrderStatus {
         }
     },
     CANCELED,
+    // TODO - BUG 10 - Automatyczna zmiana statusu na ABANDONED.
+    //  Po 5 minutach zmienia się status zamówienia na ABANDONED, nie ma tego w dokumentacji.
     ABANDONED,
-    // TODO - BUG 8 - Można zmienić status zamówienia z SHIPPED na ABANDONED. Z tego statusu nie powinno się na nic zmieniać.
+    // TODO - BUG 8 (PATCH /orders/:id/status) - Można zmienić status zamówienia z SHIPPED na ABANDONED.
+    //  Z tego statusu nie powinno się na nic zmieniać.
     SHIPPED {
         @Override
         public UpdateStatusResult updateStatus(OrderStatus status) {

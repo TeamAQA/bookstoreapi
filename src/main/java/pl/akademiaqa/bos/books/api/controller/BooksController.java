@@ -145,23 +145,6 @@ public class BooksController {
         bookService.removeById(id);
     }
 
-    // TODO - BUG 7 - (PATCH /books/:id/cover) - brak standardów w formacie odpowiedzi.
-    //  Test "invalid token" zwraca odpowiedź:
-    //  {
-    //    "timestamp": "2024-05-22T18:37:32.943+00:00",
-    //    "status": 500,
-    //    "error": "Internal Server Error",
-    //    "message": "Invalid token",
-    //    "path": "/books/265/cover"
-    //    }
-    //    a test "invalid media type - no file" zwraca:
-    //    {
-    //    "timestamp": "2024-05-22T18:38:35.249+00:00",
-    //    "status": 400,
-    //    "errors": [
-    //        "File cannot be null or empty"
-    //    ]
-    //    }
     @Secured({"ROLE_ADMIN"})
     @PatchMapping(value = "/{id}/cover", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)

@@ -196,7 +196,7 @@ public class BookService implements IBookService {
                                 return;
                             }
 
-                            // TODO - BUG 5 - (PUT /books:id) - Można edytować cenę książki z niepoprawnym formatem.
+                            // TODO - BUG 5 - (PATCH /books/:id) - Można edytować cenę książki z niepoprawnym formatem.
                             //  Nie ma sprawdzenia validacji ceny na dwa miejsca po przecinku.
                             //  Cena może być ustawiona na "price": 9.9999911
                             if (String.valueOf(value).equals("null")) {
