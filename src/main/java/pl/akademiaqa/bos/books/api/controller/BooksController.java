@@ -60,13 +60,13 @@ public class BooksController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/admin_books")
-    @ResponseStatus(HttpStatus.OK)
-    public List<RestBook> admin_getAll(HttpServletRequest request) {
-        return bookService.admin_findAll().stream()
-                .map(book -> toRestBook(book, request))
-                .collect(Collectors.toList());
-    }
+//    @GetMapping("/admin_books")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<RestBook> admin_getAll(HttpServletRequest request) {
+//        return bookService.admin_findAll().stream()
+//                .map(book -> toRestBook(book, request))
+//                .collect(Collectors.toList());
+//    }
 
     private RestBook toRestBook(Book book, HttpServletRequest request) {
         String coverUrl = Optional.ofNullable(book.getCoverId()).map(
@@ -148,7 +148,7 @@ public class BooksController {
     @Secured({"ROLE_ADMIN"})
     @PatchMapping(value = "/{id}/cover", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> updateBookCover(@PathVariable Long id, @RequestPart("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Object> updateBookCover(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
 
         validateFile(file);
         return bookService.updateBookCover(id, new UpdateBookCoverPayload(file.getBytes(), file.getContentType(), file.getOriginalFilename()))

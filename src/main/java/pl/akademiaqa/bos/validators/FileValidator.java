@@ -17,6 +17,13 @@ public class FileValidator {
     private static final long MAX_FILE_SIZE = 200 * 1024; // 200 KB
 
     public static void validateFile(MultipartFile file) {
+
+//        System.out.println("DEBUG FILE UPLOAD:");
+//        System.out.println(file.getOriginalFilename());
+//        System.out.println(file.getContentType());
+//        System.out.println(file.getSize());
+//        System.out.println(file.getName());
+
         if (file == null || file.isEmpty()) {
             throw new ValidationException("file incorrect input data");
         }
