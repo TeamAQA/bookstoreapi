@@ -44,14 +44,14 @@ class BooksControllerTestIT {
                 Set.of(joshua.getId()),
                 2005,
                 new BigDecimal("79.00"),
-                50L);
+                50);
 
         CreateBookPayload javaPuzzlers = new CreateBookPayload(
                 "Java Puzzlers",
                 Set.of(joshua.getId(), neal.getId()),
                 2018,
                 new BigDecimal("99.00"),
-                50L);
+                50);
 
         bookService.createBook(effectiveJava);
         bookService.createBook(javaPuzzlers);
