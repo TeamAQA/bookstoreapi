@@ -2,7 +2,7 @@ name: Auto Redeploy
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # Uruchamia się co 5 minut
+    - cron: "0 0 * * *"  # Uruchamia się co 5 minut
   workflow_dispatch:  # Możesz też ręcznie uruchomić workflow
 
 jobs:
