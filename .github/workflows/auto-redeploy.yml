@@ -1,0 +1,24 @@
+name: Auto Redeploy
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # Uruchamia się co 5 minut
+  workflow_dispatch:  # Możesz też ręcznie uruchomić workflow
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Create fake commit
+        run: |
+          echo "Redeploy triggered at $(date)" >> redeploy.txt
+          git config --global user.email "bot@github.com"
+          git config --global user.name "GitHub Actions Bot"
+          git add redeploy.txt
+          git commit -m "Auto redeploy trigger [skip ci]" || echo "No changes to commit"
+          git push
+
