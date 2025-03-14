@@ -22,9 +22,12 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 public class Author extends BaseEntity implements Comparable<Author> {
+    @Column(length = 255, nullable = false)
     String firstName;
+    @Column(length = 255, nullable = false)
     String lastName;
     @JsonIgnore
+    @Column(length = 512, nullable = false)
     String fullName;
 
     @ManyToMany(mappedBy = "authors", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
