@@ -15,6 +15,6 @@ public class RootController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Map<String, String> rootJson() {
-        return Map.of("message", "Bookstore API is up and running");
+        return Map.of("message", "BookstoreAPI is up and running");
     }
 }
