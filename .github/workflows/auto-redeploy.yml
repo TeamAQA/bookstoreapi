@@ -2,7 +2,7 @@ name: Auto Redeploy
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Uruchamia się co 5 minut
+    - cron: "0 0 * * *"  # codziennie o północy czasu UTC
   workflow_dispatch:  # Możesz też ręcznie uruchomić workflow
 
 jobs:
@@ -22,5 +22,9 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git add redeploy.txt
           git commit -m "Auto redeploy trigger [skip ci]" || echo "No changes to commit"
-          git push
 
+      - name: Set remote with PAT
+        run: git remote set-url origin https://x-access-token:${{ secrets.PAT_NO_EXP_FULL_TOKEN }}@github.com/${{ github.repository }}.git
+
+      - name: Push changes
+        run: git push
