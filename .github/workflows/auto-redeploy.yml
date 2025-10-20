@@ -1,9 +1,14 @@
 name: Auto Redeploy
 
+# Wyzwalacze workflow
 on:
   schedule:
-    - cron: "0 0 * * *"  # codziennie o północy czasu UTC
-  workflow_dispatch:  # Możesz też ręcznie uruchomić workflow
+    - cron: "0 0 * * *"  # codziennie o północy czasu polskiego
+  workflow_dispatch:  # możliwość ręcznego uruchomienia
+
+# Ustawienie strefy czasowej
+env:
+  TZ: Europe/Warsaw
 
 jobs:
   redeploy:
