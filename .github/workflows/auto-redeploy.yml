@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.FG_PAT_TEAMAQA_BOOKSTOREAPI_366_DAYS  }}
+          token: ${{ secrets.PAT_NO_EXP_FULL_TOKEN  }}
 
       - name: Create fake commit
         run: |
@@ -29,7 +29,7 @@ jobs:
           git commit -m "Auto redeploy trigger [skip ci]" || echo "No changes to commit"
 
       - name: Set remote with PAT
-        run: git remote set-url origin https://x-access-token:${{ secrets.FG_PAT_TEAMAQA_BOOKSTOREAPI_366_DAYS }}@github.com/${{ github.repository }}.git
+        run: git remote set-url origin https://x-access-token:${{ secrets.PAT_NO_EXP_FULL_TOKEN }}@github.com/${{ github.repository }}.git
 
       - name: Push changes
         run: git push
